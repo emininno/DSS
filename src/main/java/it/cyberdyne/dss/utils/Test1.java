@@ -6,6 +6,8 @@
 
 package it.cyberdyne.dss.utils;
 
+import it.cyberdyne.dss.users.User;
+
 
 
 /**
@@ -16,17 +18,10 @@ public class Test1 {
     
     public static void main(String[] args)  {
         
+        String user="pippo";
         String pass="ciao";
-        char[] password = Password.generateRandomPassword(10).toCharArray();
-        byte[] salt = Password.getNextSalt();
-        byte[] hash =  Password.hash(password, salt);
-        hash = Password.hash(password, salt);
-        byte[] hash3 = Password.hash(password, salt);
-        byte[] hash4 = Password.hash(password, salt);
-        System.out.println(new String(hash));
-        System.out.println(new String(hash3));
-        System.out.println(new String(hash4));
-        System.out.println(Password.isExpectedPassword(password, salt, hash));
+        User u = new User(user,pass);
+        System.out.println("pass:"+ new String(u.getPassword()));
 }
     
 }

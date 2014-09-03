@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+        <title>Registration form</title>
+    </h:head>
+    <h:body>
+    	<h3>Register here</h3>
+    	<h:form id="register-form">
+    	   <h:outputText value="username:"/>
+           <h:inputText value="#{registerBean.userName}" id="username"/>
+    	   <br/>
+    	   <h:outputText value="password:"/>
+           <h:inputSecret value="#{registerBean.password}" id="password"/>
+    	   <br/>
+           <h:commandButton id="button" value="Register" action="#{registerBean.addUser()}"/>
+    	   <br/>
+    	   <h:commandLink action="#{navigationBean.redirectToInfo}" value="Info page"/>
+           
+    	   <br/>
+    	   <h:messages />
+    	   <br/>
+    	</h:form>
+    </h:body>
+</html>
+
