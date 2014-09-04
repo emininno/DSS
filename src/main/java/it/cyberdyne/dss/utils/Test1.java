@@ -6,7 +6,10 @@
 
 package it.cyberdyne.dss.utils;
 
+import it.cyberdyne.dss.users.ManageUsers;
 import it.cyberdyne.dss.users.User;
+import java.util.Iterator;
+import java.util.List;
 
 
 
@@ -18,10 +21,17 @@ public class Test1 {
     
     public static void main(String[] args)  {
         
-        String user="pippo";
-        String pass="ciao";
-        User u = new User(user,pass);
-        System.out.println("pass:"+ new String(u.getPassword()));
+        String user="admin";
+        String pass="admin";
+        ManageUsers manager = new ManageUsers();
+        manager.addUser(user, pass);
+        
+
+       
+        int id = manager.getUserId("admin");
+        byte[] hash = manager.getPassword(id);
+        byte[] salt = manager.getSalt(id);
+        System.out.println("Logged:"+Password.isExpectedPassword(pass.toCharArray(), salt, hash));
 }
     
 }

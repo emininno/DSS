@@ -8,19 +8,17 @@
     <h:body>
     	<h3>Register here</h3>
     	<h:form id="register-form">
-    	   <h:outputText value="username:"/>
-           <h:inputText value="#{registerBean.userName}" id="username"/>
-    	   <br/>
-    	   <h:outputText value="password:"/>
-           <h:inputSecret value="#{registerBean.password}" id="password"/>
-    	   <br/>
-           <h:commandButton id="button" value="Register" action="#{registerBean.addUser()}"/>
-    	   <br/>
+           <h:panelGrid columns="2">
+    	   <h:outputText value="New user name:"/>
+           <h:inputText value="#{registerBean.userName}" id="username" required="true" requiredMessage="Username is required" />
+    	   <h:outputText value="New password:"/>
+           <h:inputSecret value="#{registerBean.password}" id="password" required="true" requiredMessage="Password is required" />
+    	   <h:outputText value="Confirm password:"/>
+           <h:inputSecret value="#{registerBean.confirmedPassword}" id="confirmedPassword" required="true" requiredMessage="Confirm your password" />
+    	   <h:commandButton id="button" value="Register" action="#{registerBean.addUser()}"/>
     	   <h:commandLink action="#{navigationBean.redirectToInfo}" value="Info page"/>
-           
-    	   <br/>
-    	   <h:messages />
-    	   <br/>
+           <h:messages />
+    	   </h:panelGrid>
     	</h:form>
     </h:body>
 </html>

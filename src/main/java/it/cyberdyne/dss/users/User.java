@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package it.cyberdyne.dss.users;
 
 import it.cyberdyne.dss.utils.Password;
@@ -13,7 +12,7 @@ import it.cyberdyne.dss.utils.Password;
  * @author ern
  */
 public class User {
-    
+
     private int id;
     private String username;
     private byte[] password;
@@ -50,8 +49,12 @@ public class User {
     public void setSalt(byte[] salt) {
         this.salt = salt;
     }
-     
-    public User(String name, String pass){
+
+    public User() {
+
+    }
+
+    public User(String name, String pass) {
         this.username = name;
         this.salt = Password.getNextSalt();
         this.password = Password.hash(pass.toCharArray(), this.salt);

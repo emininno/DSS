@@ -1,7 +1,8 @@
 package it.cyberdyne.dss.beans;
 
+import it.cyberdyne.dss.users.ManageUsers;
+import it.cyberdyne.dss.utils.Password;
 import java.io.Serializable;
-
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -19,9 +20,6 @@ public class LoginBean implements Serializable {
 
     private static final long serialVersionUID = 7765876811740798583L;
 
-    // Simple user database :)
-    private static final String[] users = {"anna:qazwsx", "kate:123456"};
-
     private String username;
     private String password;
 
@@ -37,15 +35,15 @@ public class LoginBean implements Serializable {
      */
     public String doLogin() {
         // Get every user from our sample database :)
-        for (String user : users) {
-            String dbUsername = user.split(":")[0];
-            String dbPassword = user.split(":")[1];
 
-            // Successful login
-            if (dbUsername.equals(username) && dbPassword.equals(password)) {
-                loggedIn = true;
-                return navigationBean.redirectToWelcome();
-            }
+        ManageUsers manager = new ManageUsers();
+        int id = manager.getUserId(username);
+        byte[] hash = manager.getPassword(id);
+        byte[] salt = manager.getSalt(id);
+        // Successful login
+        if (Password.isExpectedPassword(password.toCharArray(), salt, hash)) {
+            loggedIn = true;
+            return navigationBean.redirectToWelcome();
         }
 
         // Set login ERROR
@@ -75,7 +73,7 @@ public class LoginBean implements Serializable {
         return navigationBean.toLogin();
     }
 
-	// ------------------------------
+    // ------------------------------
     // Getters & Setters 
     public String getUsername() {
         return username;
