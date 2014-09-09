@@ -14,7 +14,7 @@ import javax.faces.context.FacesContext;
  *
  * @author itcuties
  */
-@ManagedBean
+@ManagedBean(name = "loginBean")
 @SessionScoped
 public class LoginBean implements Serializable {
 
@@ -27,6 +27,8 @@ public class LoginBean implements Serializable {
 
     @ManagedProperty(value = "#{navigationBean}")
     private NavigationBean navigationBean;
+    private String loggedName;
+    private int loggedId;
 
     /**
      * Login operation.
@@ -43,6 +45,8 @@ public class LoginBean implements Serializable {
         // Successful login
         if (Password.isExpectedPassword(password.toCharArray(), salt, hash)) {
             loggedIn = true;
+            loggedName = username;
+            loggedId = manager.getUserId(loggedName);
             return navigationBean.redirectToWelcome();
         }
 
@@ -75,6 +79,24 @@ public class LoginBean implements Serializable {
 
     // ------------------------------
     // Getters & Setters 
+    public String getLoggedName() {
+        return loggedName;
+    }
+
+    public void setLoggedName(String loggedName) {
+        this.loggedName = loggedName;
+    }
+
+    public int getLoggedId() {
+        return loggedId;
+    }
+
+    public void setLoggedId(int loggedId) {
+        this.loggedId = loggedId;
+    }
+    
+    
+    
     public String getUsername() {
         return username;
     }

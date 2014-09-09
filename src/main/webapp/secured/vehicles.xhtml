@@ -1,0 +1,134 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>DSS - Vehicles</title>
+        <h:outputStylesheet library="css" name="resources/css/table-style.css"  />
+    </h:head>
+    <h:body>
+        <h3>Vehicle Panel</h3><br/>
+        <h:form>
+            <h:commandLink action="#{navigationBean.redirectToVehicles()}" value="Vehicles"/>
+            <br/>
+            <h:commandLink action="#{navigationBean.redirectToPlaces()}" value="Places"/>
+            <br/>
+            <h:commandLink action="#{navigationBean.redirectToRoutes()}" value="Routes"/>
+            <br/>
+            <h:commandLink action="#{loginBean.doLogout}" value="Logout"/>
+
+            <h:panelGrid columns="2">
+                <h:outputText value="Vehicle Code:"/>
+                <h:inputText value="#{vehicleBean.code}" id="code" requiredMessage="Code is required"/>
+
+                <h:outputText value="Quantity:"/>
+                <h:inputText value="#{vehicleBean.quantity}" id="quantity" requiredMessage="This is required"/>
+
+                <h:outputText value="Model:"/>
+                <h:inputText value="#{vehicleBean.model}" id="model" requiredMessage="This is required"/>
+
+                <h:outputText value="Max Load:"/>
+                <h:inputText value="#{vehicleBean.capacity}" id="capacity" requiredMessage="This is required"/>
+
+                <h:outputText value="Max Time"/>
+                <h:inputText value="#{vehicleBean.time}" id="time" requiredMessage="This is required"/>
+
+                <h:outputText value="Max Distance:"/>
+                <h:inputText value="#{vehicleBean.distance}" id="distance" requiredMessage="This is required"/>
+
+                <h:outputText value="Start hour:"/>
+                <h:inputText value="#{vehicleBean.start}" id="start" requiredMessage="This is required"/>
+
+                <h:selectBooleanCheckbox value="#{vehicleBean.enabled}"/> Active vehicle
+
+                <h:commandButton id="button" value="Add vehicle" action="#{vehicleBean.addVehicle()}"/>
+
+                <h:messages />
+            </h:panelGrid>
+            
+            <h:dataTable value="#{vehicleTableBean.vehicleList}" var="o"
+                         styleClass="order-table"
+                         headerClass="order-table-header"
+                         rowClasses="order-table-odd-row,order-table-even-row"
+                         >
+
+                <h:column>
+                    <!-- column header -->
+                    <f:facet name="header">Code</f:facet>
+                    <h:inputText value="#{o.code}"
+                                 size="10" rendered="#{o.edit}" />
+                    <h:outputText value="#{o.code}"
+                                  rendered="#{not o.edit}" />
+                    <!-- row record -->
+
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Quantity</f:facet>
+                    <h:inputText value="#{o.quantity}"
+                                 size="10" rendered="#{o.edit}" />
+                    <h:outputText value="#{o.quantity}"
+                                  rendered="#{not o.edit}" />
+                    <!-- row record -->
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Model</f:facet>
+                    <h:inputText value="#{o.model}"
+                                 size="10" rendered="#{o.edit}" />
+                    <h:outputText value="#{o.model}"
+                                  rendered="#{not o.edit}" />
+                    <!-- row record -->
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Max Load</f:facet>
+                    <h:inputText value="#{o.capacity}"
+                                 size="10" rendered="#{o.edit}" />
+                    <h:outputText value="#{o.capacity}"
+                                  rendered="#{not o.edit}" />
+                    <!-- row record -->
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Max Time</f:facet>
+                    <h:inputText value="#{o.time}"
+                                 size="10" rendered="#{o.edit}" />
+                    <h:outputText value="#{o.time}"
+                                  rendered="#{not o.edit}" />
+                    <!-- row record -->
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Max Distance</f:facet>
+                    <h:inputText value="#{o.distance}"
+                                 size="10" rendered="#{o.edit}" />
+                    <h:outputText value="#{o.distance}"
+                                  rendered="#{not o.edit}" />
+                    <!-- row record -->
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Start Time</f:facet>
+                    <h:inputText value="#{o.start}"
+                                 size="10" rendered="#{o.edit}" />
+                    <h:outputText value="#{o.start}"
+                                  rendered="#{not o.edit}" />
+                    <!-- row record -->
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Enabled</f:facet>
+                    <h:selectBooleanCheckbox value="#{o.enabled}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Edit</f:facet>
+                    <h:commandButton value="Edit" 
+                                     action="#{vehicleTableBean.editAction(o)}" 
+                                     rendered="#{not o.edit}">        
+                        
+                    </h:commandButton>
+                </h:column>
+            </h:dataTable>
+            <h:commandButton value="Save Changes" action="#{vehicleTableBean.saveAction}" />
+        </h:form>
+    </h:body>
+</html>
+

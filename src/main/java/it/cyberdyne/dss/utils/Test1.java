@@ -3,35 +3,27 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package it.cyberdyne.dss.utils;
 
 import it.cyberdyne.dss.users.ManageUsers;
-import it.cyberdyne.dss.users.User;
-import java.util.Iterator;
-import java.util.List;
-
-
+import it.cyberdyne.dss.vehicles.ManageVehicles;
+import it.cyberdyne.dss.vehicles.Vehicle;
 
 /**
  *
  * @author ern
  */
 public class Test1 {
-    
-    public static void main(String[] args)  {
-        
-        String user="admin";
-        String pass="admin";
-        ManageUsers manager = new ManageUsers();
-        manager.addUser(user, pass);
-        
 
-       
-        int id = manager.getUserId("admin");
-        byte[] hash = manager.getPassword(id);
-        byte[] salt = manager.getSalt(id);
-        System.out.println("Logged:"+Password.isExpectedPassword(pass.toCharArray(), salt, hash));
-}
-    
+    public static void main(String[] args) {
+
+        String user = "admin";
+        String pass = "admin";
+        ManageVehicles vManager = new ManageVehicles(12);
+
+        Vehicle v = new Vehicle("001", 8, "Furgonetta", 7.5, 240.0, 1000.0, 7.30, 12, true);
+        
+        vManager.addVehicle(v);
+    }
+
 }

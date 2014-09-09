@@ -60,6 +60,30 @@ public class NavigationBean implements Serializable {
 	 * Redirect to welcome page.
 	 * @return Welcome page name.
 	 */
+	public String redirectToVehicles() {
+		return "/secured/vehicles.xhtml?faces-redirect=true";
+	}
+        
+        /**
+	 * Redirect to welcome page.
+	 * @return Welcome page name.
+	 */
+	public String redirectToPlaces() {
+		return "/secured/places.xhtml?faces-redirect=true";
+	}
+        
+        /**
+	 * Redirect to welcome page.
+	 * @return Welcome page name.
+	 */
+	public String redirectToRoutes() {
+		return "/secured/routes.xhtml?faces-redirect=true";
+	}
+        
+        /**
+	 * Redirect to welcome page.
+	 * @return Welcome page name.
+	 */
 	public String redirectToRegistration() {
 		return "/register.xhtml?faces-redirect=true";
 	}

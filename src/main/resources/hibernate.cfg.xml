@@ -8,5 +8,6 @@
     <property name="hibernate.connection.username">root</property>
     <property name="hibernate.connection.password">ern</property>
     <mapping resource="user.hbm.xml"/>
+    <mapping resource="vehicle.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

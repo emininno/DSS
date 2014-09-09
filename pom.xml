@@ -37,6 +37,11 @@
       <artifactId>mysql-connector-java</artifactId>
       <version>5.1.32</version>
     </dependency>
+    <dependency>
+      <groupId>org.primefaces</groupId>
+      <artifactId>primefaces</artifactId>
+      <version>4.0</version>
+    </dependency>
   </dependencies>
   <build>
     <finalName>jsf2-filter-login</finalName>
@@ -46,6 +51,12 @@
       <id>unknown-jars-temp-repo</id>
       <name>A temporary repository created by NetBeans for libraries and jars it could not identify. Please replace the dependencies in this repository with correct ones and delete this repository.</name>
       <url>file:${project.basedir}/lib</url>
+    </repository>
+    <repository>
+      <url>http://repository.primefaces.org/</url>
+      <id>PrimeFaces-maven-lib</id>
+      <layout>default</layout>
+      <name>Repository for library PrimeFaces-maven-lib</name>
     </repository>
   </repositories>
   <properties>

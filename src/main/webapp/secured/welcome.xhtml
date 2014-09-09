@@ -1,20 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:f="http://java.sun.com/jsf/core"      
       xmlns:h="http://java.sun.com/jsf/html">
- 
+
     <h:head>
         <title>Secured welcome page</title>
     </h:head>
     <h:body>
-    	<h:form>
-    		<h3>Welcome #{loginBean.username}</h3>
-    		<br/>
-    		<h:outputText value="This is a secured welcome page!"/>
-    		<br/>
-    		<h:commandLink action="#{loginBean.doLogout}" value="Logout"/>
-    	</h:form>
+        <h:form>
+            <h3>Welcome #{loginBean.loggedName}</h3>
+            <br/>
+            <h:outputText value="This is the DSS welcome page!"/>
+            <br/>
+            <h:commandLink action="#{navigationBean.redirectToVehicles()}" value="Vehicles"/>
+            <br/>
+            <h:commandLink action="#{navigationBean.redirectToPlaces()}" value="Places"/>
+            <br/>
+            <h:commandLink action="#{navigationBean.redirectToRoutes()}" value="Routes"/>
+            <br/>
+            <h:commandLink action="#{loginBean.doLogout}" value="Logout"/>
+        </h:form>
     </h:body>
 </html>

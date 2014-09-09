@@ -5,8 +5,11 @@
  */
 package it.cyberdyne.dss.utils;
 
+import java.util.List;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
 /**
  *
@@ -25,6 +28,27 @@ public class DataHelper {
     public DataHelper() {
 
         s = helper.getSessionFactory();
+    }
+
+    public List makeQuery(String query) {
+        openSession();
+        Transaction tx = null;
+        List users = null;
+
+        try {
+            tx = session.beginTransaction();
+            users = session.createQuery(query).list();
+
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            closeSession();
+        }
+        return users;
     }
 
     public Integer pushData(Object data) {

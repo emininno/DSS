@@ -42,30 +42,10 @@ public class ManageUsers {
         }
     }
 
-    public List makeQuery(String query) {
-        helper.openSession();
-        Session session = this.helper.getSession();
-        Transaction tx = null;
-        List users = null;
+    
 
-        try {
-            tx = session.beginTransaction();
-            users = session.createQuery(query).list();
-
-            tx.commit();
-        } catch (HibernateException e) {
-            if (tx != null) {
-                tx.rollback();
-            }
-            e.printStackTrace();
-        } finally {
-            helper.closeSession();
-        }
-        return users;
-    }
-
-    public List listUsers() {
-       List<User> list = makeQuery("FROM User");
+    public List<User> listUsers() {
+       List<User> list = helper.makeQuery("FROM User");
         return list;
     }
 
