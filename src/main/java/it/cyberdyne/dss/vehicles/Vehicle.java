@@ -102,7 +102,7 @@ public class Vehicle {
     }
 
     public Vehicle(String type, Integer quantity, String model, Double capacity, Double time, Double distance, Double start, Integer userId, boolean enabled) {
-
+        this.id = -1;
         this.code = type;
         this.quantity = quantity;
         this.model = model;
@@ -115,6 +115,7 @@ public class Vehicle {
     }
 
     public Vehicle(Vehicle v) {
+        this.id = v.getId();
         this.code = v.getCode();
         this.quantity = v.getQuantity();
         this.model = v.getModel();
@@ -125,6 +126,19 @@ public class Vehicle {
         this.time = v.getTime();
         this.enabled = v.isEnabled();
 
+    }
+    
+    public void copy(Vehicle v){
+        this.id = v.getId();
+        this.code = v.getCode();
+        this.quantity = v.getQuantity();
+        this.model = v.getModel();
+        this.capacity = v.getCapacity();
+        this.distance = v.getDistance();
+        this.start = v.getStart();
+        this.userId = v.getUserId();
+        this.time = v.getTime();
+        this.enabled = v.isEnabled();
     }
 
     public Vehicle() {

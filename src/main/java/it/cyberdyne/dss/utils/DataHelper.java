@@ -58,6 +58,10 @@ public class DataHelper {
 
         return id;
     }
+    
+    public void updateData(int id, Object data) {
+        
+    }
 
     public void openSession() {
         session = s.openSession();
