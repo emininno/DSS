@@ -4,10 +4,11 @@
   <session-factory>
     <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
     <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/DSS?zeroDateTimeBehavior=convertToNull</property>
+    <property name="hibernate.connection.url">jdbc:mysql://dss:3306/DSS?zeroDateTimeBehavior=convertToNull</property>
     <property name="hibernate.connection.username">root</property>
     <property name="hibernate.connection.password">ern</property>
     <mapping resource="user.hbm.xml"/>
     <mapping resource="vehicle.hbm.xml"/>
+    <mapping resource="place.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

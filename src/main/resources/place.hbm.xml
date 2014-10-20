@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="it.cyberdyne.dss.places.Place" catalog="DSS" table="Places">
+        <id name="id" type="java.lang.Integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <property name="label" type="string" column="label"/>
+        <property name="demand" type="double" column="demand"/>
+        <property name="serviceTime" type="int" column="serviceTime"/>
+        <property name="open" type="java.sql.Time" column="open"/>
+        <property name="close" type="java.sql.Time" column="close"/>
+        <property name="address" type="string" column="address"/>
+        <property name="userId" type="int" column="userId"/>
+        <property name="enabled" type="boolean" column="enabled"/>
+             
+    </class>
+</hibernate-mapping>

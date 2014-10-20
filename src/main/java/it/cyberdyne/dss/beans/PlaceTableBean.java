@@ -5,9 +5,11 @@
  */
 package it.cyberdyne.dss.beans;
 
+import it.cyberdyne.dss.places.ManagePlaces;
+import it.cyberdyne.dss.places.Place;
 import it.cyberdyne.dss.utils.HibernateUtil;
-import it.cyberdyne.dss.vehicles.ManageVehicles;
 import it.cyberdyne.dss.vehicles.Vehicle;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -20,85 +22,104 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.RowEditEvent;
+import org.primefaces.model.UploadedFile;
 
 /**
  *
  * @author ern
  */
-@ManagedBean(name = "vehicleTableBean")
+@ManagedBean
 @SessionScoped
+public class PlaceTableBean {
 
-public class VehicleTableBean {
-    
     @ManagedProperty(value = "#{loginBean}")
     private LoginBean loginBean;
-
-    private ArrayList<Vehicle> vehicleList;
-    private ArrayList<Vehicle> deletedVehicles;
-    private VehicleBean service;
-    private Vehicle selectedVehicle;
     
-    public Vehicle getSelectedVehicle() {
-        return selectedVehicle;
+    private ArrayList<Place> placeList;
+    private ArrayList<Place> deletedPlaces;
+    private PlaceBean  service;
+    private Place selectedPlace;
+    
+    private UploadedFile file;
+ 
+    public UploadedFile getFile() {
+        return file;
+    }
+ 
+    public void setFile(UploadedFile file) {
+        this.file = file;
+    }
+     
+    public void upload() {
+        System.out.println("UPLOAD");
+        RequestContext.getCurrentInstance().closeDialog(file);
+        if(file != null) {
+            System.out.println("NotNULL");
+            FacesMessage message = new FacesMessage("Succesful", file.getFileName() + " is uploaded.");
+            
+            FacesContext.getCurrentInstance().addMessage(null, message);
+        }        
+        
+    }
+    
+    public Place getSelectedPlace() {
+        return selectedPlace;
+    }
+
+    public void setSelectedPlace(Place selectedPlace) {
+        this.selectedPlace = selectedPlace;
     }
     
     public void toggleEnabled() {
-        if (selectedVehicle.isEnabled()) {
-            selectedVehicle.setEnabled(false);
+        if (selectedPlace.isEnabled()) {
+            selectedPlace.setEnabled(false);
         } else {
-            selectedVehicle.setEnabled(true);
+            selectedPlace.setEnabled(true);
         }
     }
-    
-    public void setSelectedVehicle(Vehicle selectedVehicle) {
-        this.selectedVehicle = selectedVehicle;
+
+    public ArrayList<Place> getPlaceList() {
+        return placeList;
     }
     
-    public ArrayList<Vehicle> getVehicleList() {
-        return vehicleList;
+    /**
+     * Creates a new instance of PlaceTableBean
+     */
+    public PlaceTableBean() {
+        
+  
+    }
+    
+    private Place[] getPlaceArrayFromDB() {
+        ManagePlaces manager = new ManagePlaces(loginBean.getLoggedId());
+        List<Place> list = manager.listPlaces();
+        Place[] p = new Place[list.size()];
+        return list.toArray(p);
     }
 
-    /**
-     * Creates a new instance of VehicleTableBean
-     */
-    public VehicleTableBean() {
-        
-    }
-    
-    private Vehicle[] getVehicleArrayFromDB() {
-        
-        ManageVehicles manager = new ManageVehicles(loginBean.getLoggedId());
-        List<Vehicle> list = manager.listVehicles();
-        Vehicle[] v = new Vehicle[list.size()];
-        return list.toArray(v);
-        
-    }
-    
     public void setLoginBean(LoginBean loginBean) {
         this.loginBean = loginBean;
     }
     
-    private List<Vehicle> getVehicleListFromDB() {
-        ManageVehicles manager = new ManageVehicles(loginBean.getLoggedId());
-        List<Vehicle> list = manager.listVehicles();
+    private List<Place> getPlaceListFromDB() {
+        ManagePlaces manager = new ManagePlaces(loginBean.getLoggedId());
+        List<Place> list = manager.listPlaces();
         return list;
     }
     
     public String saveAction() {
-        
         SessionFactory s = HibernateUtil.getSessionFactory();
-        
-        for (Vehicle vehicleList1 : vehicleList) {
-            System.out.println("v(id):" + vehicleList1.getId() + ", v(edit):" + vehicleList1.isEdit() + " v(capacity):" + vehicleList1.getCapacity());
-            int id = vehicleList1.getId();
-            if (id < 0) {
+        for (Place placeList1 : placeList){
+            int id = placeList1.getId();
+            if (id<0){
                 Session session = s.openSession();
                 Transaction tx = null;
                 try {
                     tx = session.beginTransaction();
-                    session.save(vehicleList1);
+                    session.save(placeList1);
                     tx.commit();
                 } catch (HibernateException e) {
                     if (tx != null) {
@@ -108,17 +129,16 @@ public class VehicleTableBean {
                 } finally {
                     session.close();
                 }
-                
             } else {
-                if (vehicleList1.isEdit()) {
+                if (placeList1.isEdit()) {
                     Session session = s.openSession();
                     Transaction tx = null;
                     try {
                         tx = session.beginTransaction();
-                        Vehicle v = (Vehicle) session.get(Vehicle.class, id);
+                        Place p = (Place) session.get(Place.class, id);
                         
-                        v.copy(vehicleList1);
-                        session.update(v);
+                        p.copy(placeList1);
+                        session.update(p);
                         tx.commit();
                     } catch (HibernateException e) {
                         if (tx != null) {
@@ -132,13 +152,13 @@ public class VehicleTableBean {
                 }
             }
         }
-        for (Vehicle v : deletedVehicles) {
+        for (Place v : deletedPlaces) {
             int id = v.getId();
             Session session = s.openSession();
             Transaction tx = null;
             try {
                 tx = session.beginTransaction();
-                Vehicle tmpV = (Vehicle) session.get(Vehicle.class, id);
+                Place tmpV = (Place) session.get(Place.class, id);
                 session.delete(tmpV);
                 tx.commit();
             } catch (HibernateException e) {
@@ -150,41 +170,39 @@ public class VehicleTableBean {
                 session.close();
             }
         }
-        deletedVehicles.removeAll(deletedVehicles);
+        deletedPlaces.removeAll(deletedPlaces);
         //return to current page
         return null;
-        
     }
     
-    public String editAction(Vehicle vehicle) {
-        vehicle.setEdit(true);
+    public String editAction(Place place) {
+        place.setEdit(true);
         return null;
     }
     
     @PostConstruct
     public void init() {
-        this.vehicleList = (ArrayList<Vehicle>) getVehicleListFromDB();
-        this.deletedVehicles = new ArrayList<>();
+        this.placeList = (ArrayList<Place>) getPlaceListFromDB();
+        this.deletedPlaces = new ArrayList<>();
         
     }
     
-    public void setService(VehicleBean service) {
+    public void setService(PlaceBean service) {
         this.service = service;
     }
     
     public void onEdit(RowEditEvent event) {
-        System.out.println("xxx:");
+        //System.out.println("xxx:");
     }
     
     public void onRowEdit(RowEditEvent event) {
-        FacesMessage msg = new FacesMessage("Vehicle Edited", ((Vehicle) event.getObject()).getCode());
+        FacesMessage msg = new FacesMessage("Place Edited", ((Place) event.getObject()).getLabel());
         FacesContext.getCurrentInstance().addMessage(null, msg);
         ((Vehicle) event.getObject()).setEdit(true);
-        System.out.println("xxx:" + ((Vehicle) event.getObject()).getCode());
+        System.out.println("xxx:" + ((Place) event.getObject()).getLabel());
     }
-    
     public void onRowCancel(RowEditEvent event) {
-        FacesMessage msg = new FacesMessage("Edit Cancelled", ((Vehicle) event.getObject()).getCode());
+        FacesMessage msg = new FacesMessage("Edit Cancelled", ((Place) event.getObject()).getLabel());
         FacesContext.getCurrentInstance().addMessage(null, msg);
         ((Vehicle) event.getObject()).setEdit(false);
     }
@@ -194,20 +212,21 @@ public class VehicleTableBean {
         Object newValue = event.getNewValue();
         int id = event.getRowIndex();
         //((Vehicle) event.getSource()).setEdit(true);
-        vehicleList.get(id).setEdit(true);
+        placeList.get(id).setEdit(true);
         //if (newValue != null && !newValue.equals(oldValue)) {
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cell Changed", "Row:" + id);
         FacesContext.getCurrentInstance().addMessage(null, msg);
         //}
     }
-    
-    public void deleteVehicle() {
-        deletedVehicles.add(selectedVehicle);
-        vehicleList.remove(selectedVehicle);
-        selectedVehicle = null;
+    public void deletePlace() {
+        deletedPlaces.add(selectedPlace);
+        placeList.remove(selectedPlace);
+        selectedPlace = null;
     }
     
-    public void addVehicle() {
-        vehicleList.add(new Vehicle("000", 0, "Model", 0.0, 0.0, 0.0, 0.0, loginBean.getLoggedId(), true));
+    public void addPlace() {
+        Time topen = new Time(8, 0, 0);
+        Time tclose = new Time(18,0,0);
+        placeList.add(new Place("None",0.0, 0, topen, tclose, "nowhere", loginBean.getLoggedId()));
     }
 }

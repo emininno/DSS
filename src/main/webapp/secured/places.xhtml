@@ -1,20 +1,101 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>Facelet Title</title>
     </h:head>
     <h:body>
         <h3>CR/CMP Panel</h3><br/>
-        <h:form>
-        <h:commandLink action="#{navigationBean.redirectToVehicles()}" value="Vehicles"/>
-        <br/>
-        <h:commandLink action="#{navigationBean.redirectToPlaces()}" value="Places"/>
-        <br/>
-        <h:commandLink action="#{navigationBean.redirectToRoutes()}" value="Routes"/>
-        <br/>
-        <h:commandLink action="#{loginBean.doLogout}" value="Logout"/>
+        <h:form id="form">
+            <h:commandLink action="#{navigationBean.redirectToVehicles()}" value="Vehicles"/>
+            <br/>
+            <h:commandLink action="#{navigationBean.redirectToPlaces()}" value="Places"/>
+            <br/>
+            <h:commandLink action="#{navigationBean.redirectToRoutes()}" value="Routes"/>
+            <br/>
+            <h:commandLink action="#{loginBean.doLogout}" value="Logout"/>
+            <p:growl id="msgs" showDetail="true"/>
+
+            <p:contextMenu for="placeList" widgetVar="cMenu">   
+                <p:menuitem value="Edit Cell" icon="ui-icon-search" onclick="PF('cellCars').showCellEditor();
+                        return false;"/>  
+                <p:menuitem value="Delete row" update="placeList" icon="ui-icon-minus" actionListener="#{placeTableBean.deletePlace}"/>
+                <p:menuitem value="Hide Menu" icon="ui-icon-close" onclick="PF('cMenu').hide()"/>  
+            </p:contextMenu> 
+
+            <p:dataTable id="placeList" var="place" value="#{placeTableBean.placeList}" editable="true" 
+                         editMode="cell" widgetVar="cellPlace" selection="#{placeTableBean.selectedPlace}" 
+                         selectionMode="single" rowKey="#{place.label}">
+                <f:facet name="header">
+                    Places table
+                </f:facet>
+
+                <p:ajax event="cellEdit" listener="#{placeTableBean.onCellEdit}" update=":form:msgs" />
+
+                <p:column headerText="Label">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{place.label}" /></f:facet>
+                        <f:facet name="input"><p:inputText value="#{place.label}" style="width:96%"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Demand">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{place.demand}" /></f:facet>
+                        <f:facet name="input"><p:inputText value="#{place.demand}" style="width:96%" label="Quantity"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Service Time">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{place.serviceTime}" /></f:facet>
+                        <f:facet name="input"><p:inputText value="#{place.serviceTime}" style="width:96%" label="Model"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Open time">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{place.open}" /></f:facet>
+                        <f:facet name="input"><p:inputText value="#{place.open}" style="width:96%" label="Capacity"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Close time">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{place.close}" /></f:facet>
+                        <f:facet name="input"><p:inputText value="#{place.close}" style="width:96%" label="Time"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Address">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{place.address}" /></f:facet>
+                        <f:facet name="input"><p:inputText value="#{place.address}" style="width:96%" label="Distance"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Enabled">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{place.enabled}" /></f:facet>
+                        <f:facet name="input"><p:inputText value="#{place.enabled}" style="width:96%" label="Enabled"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+            </p:dataTable>
+            <p:commandButton id="new" value="New place" action="#{placeTableBean.addPlace}" icon="ui-icon-plus" update="placeList" ajax="true"/>
+            <p:commandButton id="submit" value="Save Changes" action="#{placeTableBean.saveAction}" icon="ui-icon-disk"/>
+            <p:commandButton id="reload" value="Reload from DB" action="#{placeTableBean.init}" icon="ui-icon-refresh" update="placeList" ajax="true"/>
+            <p:commandButton value="Upload places" type="button" onclick="PF('dlg2').show();" />
+            <p:dialog header="Modal Dialog" widgetVar="dlg2" modal="true" height="100">
+                <h:outputText value="Select a CSV file to upload your places." />
+                <h:form enctype="multipart/form-data">
+                    <p:growl id="messages" showDetail="true" />
+                    <p:fileUpload value="#{placeTableBean.file}" mode="simple" disabled="false" />
+                    <p:commandButton value="Submit file" actionListener="#{placeTableBean.upload}" disabled="false" ajax="true"/>
+                </h:form>
+            </p:dialog>
+
+
+
         </h:form>
     </h:body>
 </html>

@@ -36,8 +36,8 @@ public class VehicleBean implements Serializable {
     private LoginBean loginBean;
     private int loggedId;
 
+    //TODO - Non serve?
     public String addVehicle() {
-        // Get every user from our sample database :)
 
         ManageVehicles manager = new ManageVehicles(loginBean.getLoggedId());
 
