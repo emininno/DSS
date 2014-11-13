@@ -81,6 +81,7 @@ public class VehicleTableBean {
     }
     
     private List<Vehicle> getVehicleListFromDB() {
+        System.out.println("Get Vehicles From DB");
         ManageVehicles manager = new ManageVehicles(loginBean.getLoggedId());
         List<Vehicle> list = manager.listVehicles();
         return list;

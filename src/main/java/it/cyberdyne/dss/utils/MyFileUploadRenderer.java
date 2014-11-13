@@ -9,7 +9,6 @@ public class MyFileUploadRenderer extends FileUploadRenderer {
 
     @Override
     public void decode(FacesContext context, UIComponent component) {
-        System.out.println("DECODE!!");
         if (context.getExternalContext().getRequestContentType().toLowerCase().startsWith("multipart/")) {
             super.decode(context, component);
         }

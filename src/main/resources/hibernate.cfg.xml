@@ -10,5 +10,6 @@
     <mapping resource="user.hbm.xml"/>
     <mapping resource="vehicle.hbm.xml"/>
     <mapping resource="place.hbm.xml"/>
+    <mapping resource="distance.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

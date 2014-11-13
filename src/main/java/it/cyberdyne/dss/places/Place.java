@@ -130,7 +130,6 @@ public class Place {
     }
     
     public void copy(Place v){
-        this.id = -1;
         this.label = v.getLabel();
         this.demand = v.getDemand();
         this.serviceTime = v.getServiceTime();

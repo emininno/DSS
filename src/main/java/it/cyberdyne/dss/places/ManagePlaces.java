@@ -55,6 +55,7 @@ public class ManagePlaces {
     }
 
     public List<Place> listPlaces() {
+        System.out.println("ListPlaces...");
         helper.openSession();
         Session session = helper.getSession();
         Criteria cr=session.createCriteria(Place.class);
