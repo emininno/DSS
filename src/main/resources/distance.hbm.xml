@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="it.cyberdyne.dss.places.Distance" catalog="DSS" table="PlaceDistances">
-        <property name="placeId1" type="int" column="PlaceId1"/>
-        <property name="placeId2" type="int" column="PlaceId2"/>
+    <class name="it.cyberdyne.dss.places.Distance" table="PlaceDistances">
+        <id name="id" type="java.lang.Integer" column="id">
+            <generator class="identity"/>
+        </id>
+        <property name="placeId1" type="int" column="Place1Id"/>
+        <property name="placeId2" type="int" column="Place2Id"/>
         <property name="distance" type="double" column="Distance"/>
     </class>
 </hibernate-mapping>

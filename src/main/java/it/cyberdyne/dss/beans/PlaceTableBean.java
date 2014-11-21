@@ -5,6 +5,8 @@
  */
 package it.cyberdyne.dss.beans;
 
+import it.cyberdyne.dss.places.Distance;
+import it.cyberdyne.dss.places.ManageDistances;
 import it.cyberdyne.dss.places.ManagePlaces;
 import it.cyberdyne.dss.places.Place;
 import it.cyberdyne.dss.utils.HibernateUtil;
@@ -27,7 +29,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -51,6 +52,7 @@ public class PlaceTableBean implements Serializable {
     private static final File LOCATION = new File("/tmp");
     private ArrayList<Place> placeList;
     private ArrayList<Place> deletedPlaces;
+    private ArrayList<Distance> distanceList;
     private PlaceBean service;
     private Place selectedPlace;
 
@@ -171,6 +173,14 @@ public class PlaceTableBean implements Serializable {
         List<Place> list = manager.listPlaces();
         return list;
     }
+    
+    private List<Distance> getDistanceListFromDB() {
+        System.out.println("Get Distances From DB...");
+        ManageDistances manager;
+        manager = new ManageDistances(loginBean.getLoggedId());
+        List<Distance> list = manager.listDistances();
+        return list;
+    }
 
     public String saveAction() {
         SessionFactory s = HibernateUtil.getSessionFactory();
@@ -187,7 +197,6 @@ public class PlaceTableBean implements Serializable {
                     if (tx != null) {
                         tx.rollback();
                     }
-                    e.printStackTrace();
                 } finally {
                     session.close();
                 }
@@ -206,7 +215,6 @@ public class PlaceTableBean implements Serializable {
                         if (tx != null) {
                             tx.rollback();
                         }
-                        e.printStackTrace();
                     } finally {
                         session.close();
                     }
@@ -227,7 +235,6 @@ public class PlaceTableBean implements Serializable {
                 if (tx != null) {
                     tx.rollback();
                 }
-                e.printStackTrace();
             } finally {
                 session.close();
             }
@@ -245,6 +252,8 @@ public class PlaceTableBean implements Serializable {
     @PostConstruct
     public void init() {
         this.placeList = (ArrayList<Place>) getPlaceListFromDB();
+        this.distanceList = (ArrayList<Distance>) getDistanceListFromDB();
+        this.distanceList = new ArrayList<>();
         this.deletedPlaces = new ArrayList<>();
 
     }
@@ -306,11 +315,16 @@ public class PlaceTableBean implements Serializable {
         Time tClose = new Time(Integer.parseInt(tCloseH[0]), Integer.parseInt(tCloseH[1]), 0);
         placeList.add(new Place(label, demand, serviceTime, tOpen, tClose, place, loginBean.getLoggedId()));
     }
+    
+    public void addDistance(int id1, int id2, double dist)
+    {
+        distanceList.add(new Distance(id1, id2, dist));
+    }
 
     public void updateMatrix(List<String> list) {
-
-        ArrayList<String> row0 = new ArrayList<String>(Arrays.asList(list.get(0).split(";")));
-        ArrayList<Integer> indices = new ArrayList<Integer>();
+        System.out.println("UpdateMatrix");
+        ArrayList<String> row0 = new ArrayList<>(Arrays.asList(list.get(0).split(";")));
+        ArrayList<Integer> indices = new ArrayList<>();
         Iterator<String> it = row0.iterator();
         while (it.hasNext()) {
             String currentLabel = it.next();
@@ -321,7 +335,16 @@ public class PlaceTableBean implements Serializable {
         }
         for (int i = 1; i < list.size(); i++) {
             String matrixString = list.get(i);
-            List<String> row = new ArrayList<String>(Arrays.asList(matrixString.split(";")));
+            List<String> row = new ArrayList<>(Arrays.asList(matrixString.split(";")));
+            for (int j=i; j<row.size(); j++)
+            {
+                if (searchInDistanceList(indices.get(i), indices.get(j)) == -1)
+                    System.out.println("Distance Found!");
+                else {
+                    addDistance(indices.get(i), indices.get(j), Double.parseDouble(row.get(j)));
+                    System.out.println("Distance -- Id1:"+indices.get(i)+" Id2:"+indices.get(j)+" d:"+Double.parseDouble(row.get(j)));
+                }
+            }
             if (searchInPlaceList(row.get(0), placeList) == -1) {
                 System.out.println(i++ + ":");
                 addPlace(row);
@@ -335,7 +358,7 @@ public class PlaceTableBean implements Serializable {
         int i = 0;
         for (String placeString : list) {
 
-            List<String> row = new ArrayList<String>(Arrays.asList(placeString.split(";")));
+            List<String> row = new ArrayList<>(Arrays.asList(placeString.split(";")));
             if (searchInPlaceList(row.get(0), placeList) == -1) {
                 System.out.println(i++ + ":");
                 addPlace(row);
@@ -350,6 +373,16 @@ public class PlaceTableBean implements Serializable {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getLabel().equalsIgnoreCase(label)) {
                 return i;
+            }
+        }
+        return -1;
+    }
+    
+    private int searchInDistanceList(int id1, int id2) {
+
+        for (Distance distanceList1 : distanceList) {
+            if ((distanceList1.getPlaceId1() == id1) && (distanceList1.getPlaceId2() == id2)) {
+                return distanceList1.getId();
             }
         }
         return -1;

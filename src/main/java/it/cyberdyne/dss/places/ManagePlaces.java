@@ -149,8 +149,6 @@ public class ManagePlaces {
         return list.get(0).getAddress();
     }
 
-    
-
     public Integer getUserId(int id) {
         helper.openSession();
         Session session = helper.getSession();

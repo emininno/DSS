@@ -13,12 +13,21 @@ import java.sql.Time;
  */
 public class Distance {
 
+    private Integer id;
     private Integer placeId1;
     private Integer placeId2;
     private Double distance;
 
     private boolean edit = false;
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+    
     public Integer getPlaceId1() {
         return placeId1;
     }
@@ -78,6 +87,4 @@ public class Distance {
     public Distance() {
 
     }
-
-
 }
