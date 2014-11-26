@@ -5,13 +5,14 @@
  */
 package it.cyberdyne.dss.places;
 
+import java.io.Serializable;
 import java.sql.Time;
 
 /**
  *
  * @author ern
  */
-public class Distance {
+public class Distance implements Serializable{
 
     private Integer id;
     private Integer placeId1;
@@ -86,5 +87,11 @@ public class Distance {
 
     public Distance() {
 
+    }
+    
+    @Override
+    public String toString(){
+        String s = "id1:"+this.placeId1+" id2:"+this.placeId2+" dist:"+this.distance;
+        return s;
     }
 }

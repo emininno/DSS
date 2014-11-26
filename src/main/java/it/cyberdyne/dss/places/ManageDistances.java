@@ -9,6 +9,7 @@ import it.cyberdyne.dss.utils.DataHelper;
 import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
@@ -58,10 +59,14 @@ public class ManageDistances {
         System.out.println("listDistances...");
         helper.openSession();
         Session session = helper.getSession();
-        Query query = session.createSQLQuery("SELECT * FROM PlaceDistances WHERE (Place1Id IN (SELECT id FROM Places WHERE userId= :uId) AND Place2Id IN (SELECT id FROM Places WHERE userId= :uId))").addEntity(Distance.class).setParameter("uId", userId);
+        SQLQuery query = session.createSQLQuery("SELECT * FROM PlaceDistances WHERE (Place1Id IN (SELECT id FROM Places WHERE userId = :uId) AND Place2Id IN (SELECT id FROM Places WHERE userId = :uId))");
+        query.addEntity(Distance.class);
+        query.setParameter("uId", userId);
+        
         List<Distance> list = query.list();
         
         helper.closeSession();
+        System.out.println("DistanceList size="+list.size());
         return list;
     }
 

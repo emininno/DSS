@@ -253,6 +253,12 @@ public class PlaceTableBean implements Serializable {
     public void init() {
         this.placeList = (ArrayList<Place>) getPlaceListFromDB();
         this.distanceList = (ArrayList<Distance>) getDistanceListFromDB();
+        String listString ="";
+        for (Distance d : this.distanceList)
+        {
+            listString += d.toString() + "\n";
+        }
+        System.out.println(listString);
         this.distanceList = new ArrayList<>();
         this.deletedPlaces = new ArrayList<>();
 
@@ -326,10 +332,12 @@ public class PlaceTableBean implements Serializable {
         ArrayList<String> row0 = new ArrayList<>(Arrays.asList(list.get(0).split(";")));
         ArrayList<Integer> indices = new ArrayList<>();
         Iterator<String> it = row0.iterator();
+        int c=0;
         while (it.hasNext()) {
             String currentLabel = it.next();
             int index = searchInPlaceList(currentLabel, placeList);
             if (index > 0) {
+                System.out.println(c++ + ". Label:"+currentLabel + " index:"+index);
                 indices.add(index);
             }
         }
@@ -338,6 +346,7 @@ public class PlaceTableBean implements Serializable {
             List<String> row = new ArrayList<>(Arrays.asList(matrixString.split(";")));
             for (int j=i; j<row.size(); j++)
             {
+                System.out.println("Looking for i:"+indices.get(i)+" j:"+indices.get(j));
                 if (searchInDistanceList(indices.get(i), indices.get(j)) == -1)
                     System.out.println("Distance Found!");
                 else {
@@ -379,10 +388,10 @@ public class PlaceTableBean implements Serializable {
     }
     
     private int searchInDistanceList(int id1, int id2) {
-
-        for (Distance distanceList1 : distanceList) {
-            if ((distanceList1.getPlaceId1() == id1) && (distanceList1.getPlaceId2() == id2)) {
-                return distanceList1.getId();
+        
+        for (Distance d : distanceList) {
+            if ((d.getPlaceId1() == id1) && (d.getPlaceId2() == id2)) {
+                return d.getId();
             }
         }
         return -1;

@@ -5,12 +5,13 @@
  */
 package it.cyberdyne.dss.places;
 
+import java.io.Serializable;
 import java.sql.Time;
 /**
  *
  * @author ern
  */
-public class Place {
+public class Place implements Serializable{
 
     private Integer id;
     private String label;
