@@ -173,7 +173,7 @@ public class PlaceTableBean implements Serializable {
         List<Place> list = manager.listPlaces();
         return list;
     }
-    
+
     private List<Distance> getDistanceListFromDB() {
         System.out.println("Get Distances From DB...");
         ManageDistances manager;
@@ -184,14 +184,14 @@ public class PlaceTableBean implements Serializable {
 
     public String saveAction() {
         SessionFactory s = HibernateUtil.getSessionFactory();
-        for (Place placeList1 : placeList) {
-            int id = placeList1.getId();
+        for (Place place : placeList) {
+            int id = place.getId();
             if (id < 0) {
                 Session session = s.openSession();
                 Transaction tx = null;
                 try {
                     tx = session.beginTransaction();
-                    session.save(placeList1);
+                    session.save(place);
                     tx.commit();
                 } catch (HibernateException e) {
                     if (tx != null) {
@@ -201,14 +201,14 @@ public class PlaceTableBean implements Serializable {
                     session.close();
                 }
             } else {
-                if (placeList1.isEdit()) {
+                if (place.isEdit()) {
                     Session session = s.openSession();
                     Transaction tx = null;
                     try {
                         tx = session.beginTransaction();
                         Place p = (Place) session.get(Place.class, id);
 
-                        p.copy(placeList1);
+                        p.copy(place);
                         session.update(p);
                         tx.commit();
                     } catch (HibernateException e) {
@@ -222,8 +222,8 @@ public class PlaceTableBean implements Serializable {
                 }
             }
         }
-        for (Place v : deletedPlaces) {
-            int id = v.getId();
+        for (Place place2 : deletedPlaces) {
+            int id = place2.getId();
             Session session = s.openSession();
             Transaction tx = null;
             try {
@@ -249,16 +249,18 @@ public class PlaceTableBean implements Serializable {
         return null;
     }
 
+    private void printCurrentDistanceMatrix() {
+        String listString = "";
+        for (Distance d : this.distanceList) {
+            listString += d.toString() + "\n";
+        }
+        System.out.println(listString);
+    }
+
     @PostConstruct
     public void init() {
         this.placeList = (ArrayList<Place>) getPlaceListFromDB();
         this.distanceList = (ArrayList<Distance>) getDistanceListFromDB();
-        String listString ="";
-        for (Distance d : this.distanceList)
-        {
-            listString += d.toString() + "\n";
-        }
-        System.out.println(listString);
         this.distanceList = new ArrayList<>();
         this.deletedPlaces = new ArrayList<>();
 
@@ -321,9 +323,8 @@ public class PlaceTableBean implements Serializable {
         Time tClose = new Time(Integer.parseInt(tCloseH[0]), Integer.parseInt(tCloseH[1]), 0);
         placeList.add(new Place(label, demand, serviceTime, tOpen, tClose, place, loginBean.getLoggedId()));
     }
-    
-    public void addDistance(int id1, int id2, double dist)
-    {
+
+    public void addDistance(int id1, int id2, double dist) {
         distanceList.add(new Distance(id1, id2, dist));
     }
 
@@ -332,35 +333,47 @@ public class PlaceTableBean implements Serializable {
         ArrayList<String> row0 = new ArrayList<>(Arrays.asList(list.get(0).split(";")));
         ArrayList<Integer> indices = new ArrayList<>();
         Iterator<String> it = row0.iterator();
-        int c=0;
+        int c = 0;
         while (it.hasNext()) {
             String currentLabel = it.next();
             int index = searchInPlaceList(currentLabel, placeList);
             if (index > 0) {
-                System.out.println(c++ + ". Label:"+currentLabel + " index:"+index);
                 indices.add(index);
             }
         }
-        for (int i = 1; i < list.size(); i++) {
+        for (int i = 0; i < indices.size(); i++) {
             String matrixString = list.get(i);
             List<String> row = new ArrayList<>(Arrays.asList(matrixString.split(";")));
-            for (int j=i; j<row.size(); j++)
-            {
-                System.out.println("Looking for i:"+indices.get(i)+" j:"+indices.get(j));
-                if (searchInDistanceList(indices.get(i), indices.get(j)) == -1)
+            for (int j = i+1; j < indices.size(); j++) {
+                if (searchInDistanceList(indices.get(i), indices.get(j)) != -1) {
                     System.out.println("Distance Found!");
-                else {
+                } else {
                     addDistance(indices.get(i), indices.get(j), Double.parseDouble(row.get(j)));
-                    System.out.println("Distance -- Id1:"+indices.get(i)+" Id2:"+indices.get(j)+" d:"+Double.parseDouble(row.get(j)));
                 }
             }
-            if (searchInPlaceList(row.get(0), placeList) == -1) {
-                System.out.println(i++ + ":");
-                addPlace(row);
-            } else {
-                System.out.println("Trovato.");
-            }
         }
+        System.out.println(" ************ Current List: **********");
+        System.out.println("DistanceList size:"+distanceList.size());
+        printCurrentDistanceMatrix();
+        /*SessionFactory s = HibernateUtil.getSessionFactory();
+        for (Distance distance : distanceList) {
+            int id = distance.getId();
+            if (id < 0) {
+                Session session = s.openSession();
+                Transaction tx = null;
+                try {
+                    tx = session.beginTransaction();
+                    session.save(distance);
+                    tx.commit();
+                } catch (HibernateException e) {
+                    if (tx != null) {
+                        tx.rollback();
+                    }
+                } finally {
+                    session.close();
+                }
+            }
+        }*/
     }
 
     public void updatePlaces(List<String> list) {
@@ -369,10 +382,10 @@ public class PlaceTableBean implements Serializable {
 
             List<String> row = new ArrayList<>(Arrays.asList(placeString.split(";")));
             if (searchInPlaceList(row.get(0), placeList) == -1) {
-                System.out.println(i++ + ":");
+                //System.out.println(i++ + ":");
                 addPlace(row);
             } else {
-                System.out.println("Trovato.");
+                //System.out.println("Trovato.");
             }
         }
     }
@@ -386,10 +399,11 @@ public class PlaceTableBean implements Serializable {
         }
         return -1;
     }
-    
+
     private int searchInDistanceList(int id1, int id2) {
-        
+
         for (Distance d : distanceList) {
+            //System.out.println("d:"+d);
             if ((d.getPlaceId1() == id1) && (d.getPlaceId2() == id2)) {
                 return d.getId();
             }

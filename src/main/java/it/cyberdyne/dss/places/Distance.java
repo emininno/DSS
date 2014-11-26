@@ -67,6 +67,7 @@ public class Distance implements Serializable{
     }
 
     public Distance(int id1, int id2, double distance) {
+        this.id = -1;
         this.placeId1 = id1;
         this.placeId2 = id2;
         this.distance = distance;
@@ -74,12 +75,14 @@ public class Distance implements Serializable{
     }
 
     public Distance(Distance v) {
+        this.id = -1;
         this.placeId1 = v.getPlaceId1();
         this.placeId2 = v.getPlaceId2();
         this.distance = v.getDistance();
     }
 
     public void copy(Distance v) {
+        this.id = -1;
         this.placeId1 = v.getPlaceId1();
         this.placeId2 = v.getPlaceId2();
         this.distance = v.getDistance();
@@ -91,7 +94,7 @@ public class Distance implements Serializable{
     
     @Override
     public String toString(){
-        String s = "id1:"+this.placeId1+" id2:"+this.placeId2+" dist:"+this.distance;
+        String s = "id:"+this.id + " id1:"+this.placeId1+" id2:"+this.placeId2+" dist:"+this.distance;
         return s;
     }
 }
