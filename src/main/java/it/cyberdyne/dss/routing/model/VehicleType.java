@@ -35,7 +35,7 @@
 /*     */ 
 /*     */   public VehicleType(int dep_id, String code, String model, int qty, double max_load, double max_dist, double max_time, String start_hour)
 /*     */   {
-/*  75 */     this(dep_id, code, model, qty, max_load, max_dist, max_time, start_hour, Constants.SERVICE_TIME_COEFF);
+/*  75 */     this(dep_id, code, model, qty, max_load, max_dist, max_time, start_hour, new Float(Constants.SERVICE_TIME_COEFF));
 /*     */   }
 /*     */ 
 /*     */   public String toString()

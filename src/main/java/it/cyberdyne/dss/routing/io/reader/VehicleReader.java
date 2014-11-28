@@ -114,7 +114,7 @@
 /*     */ 
 /* 163 */     String startHour = "0:00";
 /*     */ 
-/* 165 */     Float srvTimeCoeff = Constants.SERVICE_TIME_COEFF;
+/* 165 */     Float srvTimeCoeff = new Float(Constants.SERVICE_TIME_COEFF);
 /*     */ 
 /* 168 */     for (int i = 0; i < children.getLength(); i++)
 /*     */     {

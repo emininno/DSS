@@ -12,7 +12,7 @@
 /*     */   private InputManager m_iMan;
 /*     */   private Node m_dep;
 /*     */ 
-/*     */   public Routing(Cluster clst, Node dep, InputManager iMan)
+/*     */   public Routing(Cluster clst, Node dep, InputManager iMan) throws CloneNotSupportedException
 /*     */   {
 /*  33 */     this.m_cluster = clst;
 /*  34 */     this.m_iMan = iMan;
@@ -20,7 +20,7 @@
 /*  36 */     this.m_dep = ((Node)dep.clone());
 /*     */   }
 /*     */ 
-/*     */   public Routing(Cluster clst, InputManager iMan) {
+/*     */   public Routing(Cluster clst, InputManager iMan) throws CloneNotSupportedException {
 /*  40 */     this(clst, iMan.getNodeByID(Constants.DEP_ID), iMan);
 /*     */   }
 /*     */ 

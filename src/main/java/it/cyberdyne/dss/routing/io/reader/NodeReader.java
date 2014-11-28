@@ -115,7 +115,7 @@
 /*     */ 
 /* 161 */     String label = null;
 /* 162 */     Float demand = Float.valueOf(0.0F);
-/* 163 */     Float serviceTime = Constants.SERVICE_TIME_CONSTANT;
+/* 163 */     Float serviceTime = new Float(Constants.SERVICE_TIME_CONSTANT);
 /*     */ 
 /* 165 */     String openHour = null;
 /* 166 */     String closeHour = null;

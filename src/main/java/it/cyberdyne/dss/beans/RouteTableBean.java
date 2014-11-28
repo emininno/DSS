@@ -4,22 +4,26 @@ import it.cyberdyne.dss.places.Distance;
 import it.cyberdyne.dss.places.ManageDistances;
 import it.cyberdyne.dss.places.ManagePlaces;
 import it.cyberdyne.dss.places.Place;
+import it.cyberdyne.dss.routing.engine.ClusterManager;
+import it.cyberdyne.dss.routing.io.InputManager;
+import it.cyberdyne.dss.routing.model.Node;
+import it.cyberdyne.dss.routing.model.VehicleType;
 import it.cyberdyne.dss.vehicles.ManageVehicles;
 import it.cyberdyne.dss.vehicles.Vehicle;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
 
 /**
  * Simple login bean.
  *
  * @author itcuties
  */
-@ManagedBean(name = "vehicleBean")
+@ManagedBean(name = "routeBean")
 @SessionScoped
 public class RouteTableBean implements Serializable {
 
@@ -41,20 +45,51 @@ public class RouteTableBean implements Serializable {
     private LoginBean loginBean;
     private int loggedId;
 
- 
-    public void route()
-    {
+    public void route() throws CloneNotSupportedException {
         System.out.println("Initialize DB managers...");
         ManageVehicles vehicleManager = new ManageVehicles(loginBean.getLoggedId());
         ManagePlaces placeManager = new ManagePlaces(loginBean.getLoggedId());
         ManageDistances distanceManager = new ManageDistances(loginBean.getLoggedId());
         System.out.println("Get data from DB...");
         List<Vehicle> vehicleList = vehicleManager.listVehicles();
-        List <Distance> distanceList = distanceManager.listDistances();
-        List <Place> placeList = placeManager.listPlaces();
+        List<Distance> distanceList = distanceManager.listDistances();
+        List<Place> placeList = placeManager.listPlaces();
+
+        ArrayList<VehicleType> vTypeList = new ArrayList<>();
+        ArrayList<Node> nodeList = new ArrayList<>();
+        Double[][] distMatrix = new Double[placeList.size()][placeList.size()];
+        Iterator<Vehicle> it = vehicleList.iterator();
+        int i = 0;
+        while (it.hasNext()) {
+            Vehicle v = it.next();
+            VehicleType vehicle = new VehicleType(i++, v.getCode(), v.getModel(), v.getQuantity(), v.getCapacity(), v.getDistance(), v.getTime(), v.getTime().toString());
+            vTypeList.add(vehicle);
+        }
+        Iterator<Place> it2 = placeList.iterator();
+        i = 0;
+        while (it2.hasNext()) {
+            Place p = it2.next();
+            Node node = new Node(i++, p.getLabel(), p.getDemand().floatValue(), p.getServiceTime());
+            //System.out.println(i+":"+node);
+            nodeList.add(node);
+        }
+        Iterator<Distance> it3 = distanceList.iterator();
+        i = 0;
+        while (it3.hasNext()) {
+            Distance p = it3.next();
+            distMatrix[p.getPlaceId1() - 1][p.getPlaceId2() - 1] = p.getDistance();
+        }
+        InputManager iMan = new InputManager(1, distMatrix, nodeList, vTypeList);
+        ClusterManager clusterMan = new ClusterManager(iMan);
+        int ncl = clusterMan.process();
+        System.out.println("Trovati " + ncl + " cluster");
+        if (ncl > 0) {
+
+            //clusterMan.printClusters();
+            System.out.println("´Routing:");
+            //clusterMan.printTours();
         
-        //TODO aggiungere qui creazione dati e aggancio spaziale
-        
+        }
     }
 
     public String getCode() {

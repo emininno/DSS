@@ -4,7 +4,7 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui">
     <h:head>
-        <title>Facelet Title</title>
+        <title>DSS -Tour Panel</title>
     </h:head>
     <h:body>
         <h3>Tour Panel</h3><br/>
@@ -16,7 +16,7 @@
         <h:commandLink action="#{navigationBean.redirectToRoutes()}" value="Routes"/>
         <br/>
         <h:commandLink action="#{loginBean.doLogout}" value="Logout"/>
-        <p:commandButton id="Route" value="Route!" action="#{placeTableBean.init}" icon="ui-icon-refresh" update="placeList" ajax="true"/>
+        <p:commandButton id="Route" value="Route!" action="#{routeBean.route}" icon="ui-icon-refresh"/>
         </h:form>
     </h:body>
 </html>

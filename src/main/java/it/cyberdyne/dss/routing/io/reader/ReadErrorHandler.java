@@ -1,4 +1,4 @@
-/*    */ package it.poliba.lca.routing.io.reader;
+/*    */ package it.cyberdyne.dss.routing.io.reader;
 /*    */ 
 /*    */ import java.io.PrintStream;
 /*    */ import org.xml.sax.ErrorHandler;
@@ -33,6 +33,6 @@
 /*    */ }
 
 /* Location:           /home/ern/Desktop/installazione/lib/TourFinder_v1_2.jar
- * Qualified Name:     it.poliba.lca.routing.io.reader.ReadErrorHandler
+ * Qualified Name:     it.cyberdyne.dss.routing.io.reader.ReadErrorHandler
  * JD-Core Version:    0.6.2
  */
