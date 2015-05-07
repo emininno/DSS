@@ -23,7 +23,7 @@ public class Utilities {
         Double[] dists = iman.getDistRow(nodeId);
         
         ArrayList nodes = iman.getNodes();
-        
+        System.out.println("Dists size="+dists.length);
         for (int i = 0; i < nodes.size(); i++) {
             
             ((Node) nodes.get(i)).setDistance(dists[i]);

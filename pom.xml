@@ -60,7 +60,7 @@
     </dependency>
   </dependencies>
   <build>
-    <finalName>jsf2-filter-login</finalName>
+    <finalName>DSS2</finalName>
   </build>
   <repositories>
     <repository>
