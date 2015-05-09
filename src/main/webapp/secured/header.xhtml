@@ -7,14 +7,17 @@
     
     <h:commandLink action="#{loginBean.doLogout}" value="Logout"/>
     <p:tabMenu activeIndex="#{param.i}">
-    <p:menuitem value="Vehicles" outcome="#{navigationBean.redirectToVehicles()}" icon="ui-icon-star">
+    <p:menuitem value="Vehicles" outcome="#{navigationBean.redirectToVehicles()}" icon="ui-icon-document">
         <f:param name="i" value="0" />
     </p:menuitem>
-    <p:menuitem value="Places" outcome="#{navigationBean.redirectToPlaces()}" icon="ui-icon-search">
+    <p:menuitem value="Places" outcome="#{navigationBean.redirectToPlaces()}" icon="ui-icon-document">
         <f:param name="i" value="1" />
     </p:menuitem>
-    <p:menuitem value="Routes" outcome="#{navigationBean.redirectToRoutes()}" icon="ui-icon-document">
+    <p:menuitem value="Feed" outcome="#{navigationBean.redirectToFeed()}" icon="ui-icon-document">
         <f:param name="i" value="2" />
+    </p:menuitem>
+    <p:menuitem value="Routes" outcome="#{navigationBean.redirectToRoutes()}" icon="ui-icon-document">
+        <f:param name="i" value="3" />
     </p:menuitem>
     
 </p:tabMenu>

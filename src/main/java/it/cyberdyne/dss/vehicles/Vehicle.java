@@ -5,6 +5,8 @@
  */
 package it.cyberdyne.dss.vehicles;
 
+import java.sql.Time;
+
 /**
  *
  * @author ern
@@ -18,7 +20,7 @@ public class Vehicle {
     private String model;
     private Double capacity;
     private Double distance;
-    private Double start;
+    private Time start;
     private Integer userId;
     private boolean enabled;
     private Double time;
@@ -77,11 +79,11 @@ public class Vehicle {
         this.distance = distance;
     }
 
-    public Double getStart() {
+    public Time getStart() {
         return start;
     }
 
-    public void setStart(Double start) {
+    public void setStart(Time start) {
         this.start = start;
     }
 
@@ -101,7 +103,7 @@ public class Vehicle {
         this.time = time;
     }
 
-    public Vehicle(String type, Integer quantity, String model, Double capacity, Double time, Double distance, Double start, Integer userId, boolean enabled) {
+    public Vehicle(String type, Integer quantity, String model, Double capacity, Double time, Double distance, Time start, Integer userId, boolean enabled) {
         this.id = -1;
         this.code = type;
         this.quantity = quantity;

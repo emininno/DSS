@@ -3,6 +3,7 @@ package it.cyberdyne.dss.beans;
 import it.cyberdyne.dss.vehicles.ManageVehicles;
 import it.cyberdyne.dss.vehicles.Vehicle;
 import java.io.Serializable;
+import java.sql.Time;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -25,7 +26,7 @@ public class VehicleBean implements Serializable {
     private String model;
     private Double capacity;
     private Double distance;
-    private Double start;
+    private Time start;
     private Integer userId;
     private boolean enabled;
     private Double time;
@@ -94,11 +95,11 @@ public class VehicleBean implements Serializable {
         this.distance = distance;
     }
 
-    public Double getStart() {
+    public Time getStart() {
         return start;
     }
 
-    public void setStart(Double start) {
+    public void setStart(Time start) {
         this.start = start;
     }
 

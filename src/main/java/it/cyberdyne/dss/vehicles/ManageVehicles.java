@@ -6,6 +6,7 @@
 package it.cyberdyne.dss.vehicles;
 
 import it.cyberdyne.dss.utils.DataHelper;
+import java.sql.Time;
 import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -27,7 +28,7 @@ public class ManageVehicles {
         
     }
     
-    public Integer addVehicle(String code, Integer quantity, String model, Double capacity, Double time, Double distance, Double start, Integer userId, boolean enabled) {
+    public Integer addVehicle(String code, Integer quantity, String model, Double capacity, Double time, Double distance, Time start, Integer userId, boolean enabled) {
         if (!isVehicle(code)) {
             helper.openSession();
             Vehicle vehicle = new Vehicle(code, quantity, model, capacity, time, distance, start, userId, enabled);
@@ -135,7 +136,7 @@ public class ManageVehicles {
         return list.get(0).getDistance();
     }
 
-    public Double getStart(int id) {
+    public Time getStart(int id) {
         helper.openSession();
         Session session = helper.getSession();
         Criteria cr=session.createCriteria(Vehicle.class);

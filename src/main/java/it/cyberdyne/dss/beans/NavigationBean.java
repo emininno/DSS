@@ -57,7 +57,7 @@ public class NavigationBean implements Serializable {
 	}
         
         /**
-	 * Redirect to welcome page.
+	 * Redirect to Vehicles page.
 	 * @return Welcome page name.
 	 */
 	public String redirectToVehicles() {
@@ -65,7 +65,7 @@ public class NavigationBean implements Serializable {
 	}
         
         /**
-	 * Redirect to welcome page.
+	 * Redirect to Places page.
 	 * @return Welcome page name.
 	 */
 	public String redirectToPlaces() {
@@ -73,7 +73,7 @@ public class NavigationBean implements Serializable {
 	}
         
         /**
-	 * Redirect to welcome page.
+	 * Redirect to Routes page.
 	 * @return Welcome page name.
 	 */
 	public String redirectToRoutes() {
@@ -81,7 +81,15 @@ public class NavigationBean implements Serializable {
 	}
         
         /**
-	 * Redirect to welcome page.
+	 * Redirect to Feed page.
+	 * @return Welcome page name.
+	 */
+	public String redirectToFeed() {
+		return "/secured/feed.xhtml?faces-redirect=true";
+	}
+        
+        /**
+	 * Redirect to Registration page.
 	 * @return Welcome page name.
 	 */
 	public String redirectToRegistration() {

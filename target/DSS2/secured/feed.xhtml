@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>DSS - Feed panel</title>
+    </h:head>
+    <h:body>
+        <h3>Feed Panel</h3><br/>
+        <h:form id="form">
+            <ui:include src="/secured/header.xhtml" />
+
+            <p:growl id="msgs" showDetail="true"/>
+
+            <p:contextMenu for="feedList" widgetVar="cMenu">   
+                <p:menuitem value="Edit Cell" icon="ui-icon-search" onclick="PF('cellCars').showCellEditor();
+                        return false;"/>  
+                <p:menuitem value="Hide Menu" icon="ui-icon-close" onclick="PF('cMenu').hide()"/>  
+            </p:contextMenu> 
+            <p:toolbar>
+                <f:facet name="left">
+                    <p:commandButton id="submit" value="Save" action="#{feedTableBean.saveAction}" icon="ui-icon-disk"/>
+                    <p:commandButton id="reload" value="Reload" action="#{feedTableBean.init}" icon="ui-icon-refresh" update="feedList" ajax="true"/>
+                </f:facet>
+            </p:toolbar>
+            <p:separator/>
+            <p:dataTable id="feedList" var="car" value="#{feedTableBean.feedList}" editable="true" 
+                         editMode="cell" widgetVar="cellCars" selection="#{feedTableBean.selectedFeed}" 
+                         selectionMode="single" rowKey="#{car.code}">
+                <f:facet name="header">
+                    Feed table
+                </f:facet>
+
+                <p:ajax event="cellEdit" listener="#{feedTableBean.onCellEdit}" update=":form:msgs" />
+
+                <p:column headerText="Code">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{car.code}" /></f:facet>
+                        <f:facet name="input"><p:inputText value="#{car.code}" style="width:96%"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Session duration">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{car.duration}" /></f:facet>
+                        <f:facet name="input"><p:inputText value="#{car.duration}" style="width:96%" label="Quantity"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Working Time">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{car.workingTime}" /></f:facet>
+                        <f:facet name="input"><p:inputText value="#{car.workingTime}" style="width:96%" label="Model"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Start Time">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{car.start}" /></f:facet>
+                        <f:facet name="input"><p:inputText value="#{car.start}" style="width:96%" label="Capacity"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+                <p:column headerText="Uniformed">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{car.uniformed}" /></f:facet>
+                        <f:facet name="input"><p:inputText value="#{car.uniformed}" style="width:96%" label="Time"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+            </p:dataTable>
+
+
+        </h:form>
+    </h:body>
+</html>
+

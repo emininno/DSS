@@ -5,10 +5,10 @@
  */
 package it.cyberdyne.dss.beans;
 
+import it.cyberdyne.dss.feeds.Feed;
+import it.cyberdyne.dss.feeds.ManageFeeds;
 import it.cyberdyne.dss.utils.HibernateUtil;
-import it.cyberdyne.dss.vehicles.ManageVehicles;
 import it.cyberdyne.dss.vehicles.Vehicle;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -28,51 +28,50 @@ import org.primefaces.event.RowEditEvent;
  *
  * @author ern
  */
-@ManagedBean(name = "vehicleTableBean")
+@ManagedBean(name = "feedTableBean")
 @SessionScoped
 
-public class VehicleTableBean {
+public class FeedTableBean {
     
     @ManagedProperty(value = "#{loginBean}")
     private LoginBean loginBean;
 
-    private ArrayList<Vehicle> vehicleList;
-    private ArrayList<Vehicle> deletedVehicles;
-    private VehicleBean service;
-    private Vehicle selectedVehicle;
+    private ArrayList<Feed> feedList;
+    private FeedBean service;
+    private Feed selectedFeed;
     
-    public Vehicle getSelectedVehicle() {
-        return selectedVehicle;
+    public Feed getSelectedFeed() {
+        return selectedFeed;
     }
     
-    public void toggleEnabled() {
-        if (selectedVehicle.isEnabled()) {
-            selectedVehicle.setEnabled(false);
+    public void toggleUniformed() {
+        if (selectedFeed.isUniformed()) {
+            selectedFeed.setUniformed(false);
         } else {
-            selectedVehicle.setEnabled(true);
+            selectedFeed.setUniformed(true);
         }
     }
     
-    public void setSelectedVehicle(Vehicle selectedVehicle) {
-        this.selectedVehicle = selectedVehicle;
+    public void setSelectedFeed(Feed selectedFeed) {
+        this.selectedFeed = selectedFeed;
     }
     
-    public ArrayList<Vehicle> getVehicleList() {
-        return vehicleList;
+    public ArrayList<Feed> getFeedList() {
+        return feedList;
     }
 
     /**
      * Creates a new instance of VehicleTableBean
      */
-    public VehicleTableBean() {
+    public FeedTableBean() {
         
     }
     
-    private Vehicle[] getVehicleArrayFromDB() {
+    private Feed[] getFeedArrayFromDB() {
         
-        ManageVehicles manager = new ManageVehicles(loginBean.getLoggedId());
-        List<Vehicle> list = manager.listVehicles();
-        Vehicle[] v = new Vehicle[list.size()];
+        ManageFeeds manager = new ManageFeeds(loginBean.getLoggedId());
+        List<Feed> list = manager.listFeeds();
+        Feed[] v = new Feed[list.size()];
         return list.toArray(v);
         
     }
@@ -81,10 +80,10 @@ public class VehicleTableBean {
         this.loginBean = loginBean;
     }
     
-    private List<Vehicle> getVehicleListFromDB() {
-        System.out.println("Get Vehicles From DB");
-        ManageVehicles manager = new ManageVehicles(loginBean.getLoggedId());
-        List<Vehicle> list = manager.listVehicles();
+    private List<Feed> getFeedListFromDB() {
+        System.out.println("Get Feed From DB");
+        ManageFeeds manager = new ManageFeeds(loginBean.getLoggedId());
+        List<Feed> list = manager.listFeeds();
         return list;
     }
     
@@ -92,15 +91,15 @@ public class VehicleTableBean {
         
         SessionFactory s = HibernateUtil.getSessionFactory();
         
-        for (Vehicle vehicleList1 : vehicleList) {
-            System.out.println("v(id):" + vehicleList1.getId() + ", v(edit):" + vehicleList1.isEdit() + " v(capacity):" + vehicleList1.getCapacity());
-            int id = vehicleList1.getId();
+        for (Feed feedList1 : feedList) {
+            System.out.println("v(id):" + feedList1.getId() + ", v(edit):" + feedList1.isEdit() + " v(start):" + feedList1.getStart());
+            int id = feedList1.getId();
             if (id < 0) {
                 Session session = s.openSession();
                 Transaction tx = null;
                 try {
                     tx = session.beginTransaction();
-                    session.save(vehicleList1);
+                    session.save(feedList1);
                     tx.commit();
                 } catch (HibernateException e) {
                     if (tx != null) {
@@ -112,14 +111,14 @@ public class VehicleTableBean {
                 }
                 
             } else {
-                if (vehicleList1.isEdit()) {
+                if (feedList1.isEdit()) {
                     Session session = s.openSession();
                     Transaction tx = null;
                     try {
                         tx = session.beginTransaction();
-                        Vehicle v = (Vehicle) session.get(Vehicle.class, id);
+                        Feed v = (Feed) session.get(Feed.class, id);
                         
-                        v.copy(vehicleList1);
+                        v.copy(feedList1);
                         session.update(v);
                         tx.commit();
                     } catch (HibernateException e) {
@@ -134,43 +133,24 @@ public class VehicleTableBean {
                 }
             }
         }
-        for (Vehicle v : deletedVehicles) {
-            int id = v.getId();
-            Session session = s.openSession();
-            Transaction tx = null;
-            try {
-                tx = session.beginTransaction();
-                Vehicle tmpV = (Vehicle) session.get(Vehicle.class, id);
-                session.delete(tmpV);
-                tx.commit();
-            } catch (HibernateException e) {
-                if (tx != null) {
-                    tx.rollback();
-                }
-                e.printStackTrace();
-            } finally {
-                session.close();
-            }
-        }
-        deletedVehicles.removeAll(deletedVehicles);
+
         //return to current page
         return null;
         
     }
     
-    public String editAction(Vehicle vehicle) {
-        vehicle.setEdit(true);
+    public String editAction(Feed feed) {
+        feed.setEdit(true);
         return null;
     }
     
     @PostConstruct
     public void init() {
-        this.vehicleList = (ArrayList<Vehicle>) getVehicleListFromDB();
-        this.deletedVehicles = new ArrayList<>();
+        this.feedList = (ArrayList<Feed>) getFeedListFromDB();
         
     }
     
-    public void setService(VehicleBean service) {
+    public void setService(FeedBean service) {
         this.service = service;
     }
     
@@ -179,16 +159,16 @@ public class VehicleTableBean {
     }
     
     public void onRowEdit(RowEditEvent event) {
-        FacesMessage msg = new FacesMessage("Vehicle Edited", ((Vehicle) event.getObject()).getCode());
+        FacesMessage msg = new FacesMessage("Feed Edited", ((Feed) event.getObject()).getCode());
         FacesContext.getCurrentInstance().addMessage(null, msg);
-        ((Vehicle) event.getObject()).setEdit(true);
-        System.out.println("xxx:" + ((Vehicle) event.getObject()).getCode());
+        ((Feed) event.getObject()).setEdit(true);
+        System.out.println("xxx:" + ((Feed) event.getObject()).getCode());
     }
     
     public void onRowCancel(RowEditEvent event) {
-        FacesMessage msg = new FacesMessage("Edit Cancelled", ((Vehicle) event.getObject()).getCode());
+        FacesMessage msg = new FacesMessage("Edit Cancelled", ((Feed) event.getObject()).getCode());
         FacesContext.getCurrentInstance().addMessage(null, msg);
-        ((Vehicle) event.getObject()).setEdit(false);
+        ((Feed) event.getObject()).setEdit(false);
     }
     
     public void onCellEdit(CellEditEvent event) {
@@ -196,20 +176,11 @@ public class VehicleTableBean {
         Object newValue = event.getNewValue();
         int id = event.getRowIndex();
         //((Vehicle) event.getSource()).setEdit(true);
-        vehicleList.get(id).setEdit(true);
+        feedList.get(id).setEdit(true);
         //if (newValue != null && !newValue.equals(oldValue)) {
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cell Changed", "Row:" + id);
         FacesContext.getCurrentInstance().addMessage(null, msg);
         //}
     }
     
-    public void deleteVehicle() {
-        deletedVehicles.add(selectedVehicle);
-        vehicleList.remove(selectedVehicle);
-        selectedVehicle = null;
-    }
-    
-    public void addVehicle() {
-        vehicleList.add(new Vehicle("000", 0, "Model", 0.0, 0.0, 0.0, new Time(5, 0, 0), loginBean.getLoggedId(), true));
-    }
 }
