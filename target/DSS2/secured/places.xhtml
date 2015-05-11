@@ -46,10 +46,17 @@
                     </p:cellEditor>
                 </p:column>
 
-                <p:column headerText="Demand">
+                <p:column headerText="Demand A">
                     <p:cellEditor>
-                        <f:facet name="output"><h:outputText value="#{place.demand}" /></f:facet>
-                        <f:facet name="input"><p:inputText value="#{place.demand}" style="width:96%" label="Quantity"/></f:facet>
+                        <f:facet name="output"><h:outputText value="#{place.demandA}" /></f:facet>
+                        <f:facet name="input"><p:inputText value="#{place.demandA}" style="width:96%" label="Quantity"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+                
+                <p:column headerText="Demand B">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{place.demandB}" /></f:facet>
+                        <f:facet name="input"><p:inputText value="#{place.demandB}" style="width:96%" label="Quantity"/></f:facet>
                     </p:cellEditor>
                 </p:column>
 
