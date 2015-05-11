@@ -28,7 +28,7 @@ public class ManageVehicles {
         
     }
     
-    public Integer addVehicle(String code, Integer quantity, String model, Double capacity, Double time, Double distance, Time start, Integer userId, boolean enabled) {
+    public Integer addVehicle(String code, Integer quantity, String model, Double capacity, Double time, Double distance, String start, Integer userId, boolean enabled) {
         if (!isVehicle(code)) {
             helper.openSession();
             Vehicle vehicle = new Vehicle(code, quantity, model, capacity, time, distance, start, userId, enabled);
@@ -136,7 +136,7 @@ public class ManageVehicles {
         return list.get(0).getDistance();
     }
 
-    public Time getStart(int id) {
+    public String getStart(int id) {
         helper.openSession();
         Session session = helper.getSession();
         Criteria cr=session.createCriteria(Vehicle.class);

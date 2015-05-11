@@ -5,6 +5,7 @@
  */
 package it.cyberdyne.dss.feeds;
 
+import it.cyberdyne.dss.utils.Utilities;
 import java.sql.Time;
 
 /**
@@ -17,7 +18,7 @@ public class Feed {
 
     private Integer duration;
     private Integer workingTime;
-    private Time start;
+    private String start;
     private boolean uniformed;
     private Integer userId;
     private String code;
@@ -75,16 +76,29 @@ public class Feed {
         this.workingTime = workingTime;
     }
 
-    public Time getStart() {
+    public String getStart() {
         return start;
     }
 
-    public void setStart(Time start) {
-        this.start = start;
+    public void setStart(String start) {
+       if (start!=""){
+       String[] s= start.split(":");
+        if (s.length == 3)
+            if(Utilities.isInteger(s[0]) && Utilities.isInteger(s[1]) && Utilities.isInteger(s[2])){
+                this.start = start;
+            }
+                
+            else
+            {
+                this.start="05:00:00";
+            }
+        else
+            this.start="05:00:00";
+       }
     }
 
 
-    public Feed(Integer duration, String code, Integer workingTime, Time start, boolean uniformed, Integer userId) {
+    public Feed(Integer duration, String code, Integer workingTime, String start, boolean uniformed, Integer userId) {
         this.id = -1;
         this.duration = duration;
         this.workingTime = workingTime;

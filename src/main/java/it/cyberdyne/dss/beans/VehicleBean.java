@@ -26,7 +26,7 @@ public class VehicleBean implements Serializable {
     private String model;
     private Double capacity;
     private Double distance;
-    private Time start;
+    private String start;
     private Integer userId;
     private boolean enabled;
     private Double time;
@@ -95,11 +95,11 @@ public class VehicleBean implements Serializable {
         this.distance = distance;
     }
 
-    public Time getStart() {
+    public String getStart() {
         return start;
     }
 
-    public void setStart(Time start) {
+    public void setStart(String start) {
         this.start = start;
     }
 

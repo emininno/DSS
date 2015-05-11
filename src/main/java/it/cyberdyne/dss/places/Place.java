@@ -15,7 +15,8 @@ public class Place implements Serializable{
 
     private Integer id;
     private String label;
-    private Double demand;
+    private Double demandA;
+    private Double demandB;
     private Integer serviceTime;
     private Time open;
     private Time close;
@@ -25,6 +26,23 @@ public class Place implements Serializable{
     
     private boolean edit=false;
 
+    
+    public Double getDemandA() {
+        return demandA;
+    }
+
+    public void setDemandA(Double demandA) {
+        this.demandA = demandA;
+    }
+
+    public Double getDemandB() {
+        return demandB;
+    }
+
+    public void setDemandB(Double demandB) {
+        this.demandB = demandB;
+    }
+    
     public boolean isEdit() {
         return edit;
     }
@@ -56,10 +74,11 @@ public class Place implements Serializable{
         this.userId = userId;
     }
 
-    public Place(String label, Double demand, Integer serviceTime, Time open, Time close, String address, Integer userId) {
+    public Place(String label, Double demandA, Double demandB, Integer serviceTime, Time open, Time close, String address, Integer userId) {
         this.id = -1;
         this.label = label;
-        this.demand = demand;
+        this.demandA = demandA;
+        this.demandB = demandB;
         this.serviceTime = serviceTime;
         this.open = open;
         this.close = close;
@@ -74,14 +93,6 @@ public class Place implements Serializable{
 
     public void setLabel(String label) {
         this.label = label;
-    }
-
-    public Double getDemand() {
-        return demand;
-    }
-
-    public void setDemand(Double demand) {
-        this.demand = demand;
     }
 
     public Integer getServiceTime() {
@@ -120,7 +131,8 @@ public class Place implements Serializable{
     public Place(Place v) {
         this.id = -1;
         this.label = v.getLabel();
-        this.demand = v.getDemand();
+        this.demandA = v.getDemandA();
+        this.demandB = v.getDemandB();
         this.serviceTime = v.getServiceTime();
         this.open = v.getOpen();
         this.close = v.getClose();
@@ -132,7 +144,8 @@ public class Place implements Serializable{
     
     public void copy(Place v){
         this.label = v.getLabel();
-        this.demand = v.getDemand();
+        this.demandA = v.getDemandA();
+        this.demandB = v.getDemandB();
         this.serviceTime = v.getServiceTime();
         this.open = v.getOpen();
         this.close = v.getClose();
@@ -140,6 +153,7 @@ public class Place implements Serializable{
         this.userId = v.userId;
         this.enabled = v.isEnabled();
     }
+
 
     public Place() {
 

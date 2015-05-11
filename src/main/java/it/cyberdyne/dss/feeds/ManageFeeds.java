@@ -125,7 +125,7 @@ public class ManageFeeds {
         return list.get(0).getDuration();
     }
 
-    public Time getStart(int id) {
+    public String getStart(int id) {
         helper.openSession();
         Session session = helper.getSession();
         Criteria cr=session.createCriteria(Feed.class);

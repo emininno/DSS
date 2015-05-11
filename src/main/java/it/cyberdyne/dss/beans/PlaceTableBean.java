@@ -120,9 +120,9 @@ public class PlaceTableBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, message); //TODO dove va questo messaggio?
             String theString;
             theString = IOUtils.toString(file2.getInputstream(), "UTF-8");
-            //System.out.println("theString:"+theString);
+            System.out.println("theString:"+theString);
             ArrayList<String> list = new ArrayList<>(Arrays.asList(theString.split("\n")));
-            //System.out.println("List size:"+ list.size());
+            System.out.println("List size:"+ list.size());
             updateMatrix(list);
         } else {
             System.out.println("NULL!");
@@ -309,19 +309,20 @@ public class PlaceTableBean implements Serializable {
     public void addPlace() {
         Time topen = new Time(8, 0, 0);
         Time tclose = new Time(18, 0, 0);
-        placeList.add(new Place("None", 0.0, 0, topen, tclose, "nowhere", loginBean.getLoggedId()));
+        placeList.add(new Place("None", 0.0,0.0, 0, topen, tclose, "nowhere", loginBean.getLoggedId()));
     }
 
     public void addPlace(List<String> row) {
         String label = row.get(0);
-        Double demand = Double.parseDouble(row.get(1).replaceAll(",", "."));
-        Integer serviceTime = Integer.parseInt(row.get(2));
-        String[] tOpenH = row.get(3).split(":");
-        String[] tCloseH = row.get(4).split(":");
-        String place = row.get(5);
+        Double demandA = Double.parseDouble(row.get(1).replaceAll(",", "."));
+        Double demandB = Double.parseDouble(row.get(2).replaceAll(",", "."));
+        Integer serviceTime = Integer.parseInt(row.get(3));
+        String[] tOpenH = row.get(4).split(":");
+        String[] tCloseH = row.get(5).split(":");
+        String place = row.get(6);
         Time tOpen = new Time(Integer.parseInt(tOpenH[0]), Integer.parseInt(tOpenH[1]), 0);
         Time tClose = new Time(Integer.parseInt(tCloseH[0]), Integer.parseInt(tCloseH[1]), 0);
-        placeList.add(new Place(label, demand, serviceTime, tOpen, tClose, place, loginBean.getLoggedId()));
+        placeList.add(new Place(label, demandA,demandB, serviceTime, tOpen, tClose, place, loginBean.getLoggedId()));
     }
 
     public void addDistance(int id1, int id2, double dist) {
@@ -339,23 +340,29 @@ public class PlaceTableBean implements Serializable {
         int c = 0;
         while (it.hasNext()) {
             String currentLabel = it.next();
+            
             int index = searchInPlaceList(currentLabel, placeList);
-            if (index > 0) {
+            if (index >= 0) {
                 indices.add(index);
+                
             }
         }
-        
-        int rowNumber = 1;
+        //System.out.println("ListSize:"+list.size()+" IndicesSize:"+indices.size());
+        ManagePlaces manager = new ManagePlaces(loginBean.getLoggedId());
+        int rowNumber = 0;
         for (int i = 0; i < indices.size(); i++) {
-            
-            List<String> rows = new ArrayList<>(Arrays.asList(list.get(rowNumber++).split(";")));
+            rowNumber++;
+            String currentRow=list.get(rowNumber);
+            List<String> rows = new ArrayList<>(Arrays.asList(currentRow.split(";")));
             for (int j = 0; j < indices.size(); j++) {
-                int s=searchInDistanceList(indices.get(i), indices.get(j));
-                //System.out.println("i:"+indices.get(i)+" j:"+indices.get(j)+" s="+s);
+                int id1 = manager.getPlaceId(row0.get(i));
+                int id2 = manager.getPlaceId(row0.get(j));
+
+                int s=searchInDistanceList(id1, id2);
                 if (s != -1) {
                     //System.out.println("Distance Found!");
                 } else {
-                    addDistance(indices.get(i), indices.get(j), Double.parseDouble(rows.get(j)));
+                    addDistance(id1, id2, Double.parseDouble(rows.get(j)));
                 }
             }
         }

@@ -58,9 +58,8 @@ public class ManageDistances {
     public List<Distance> listDistances() {
         helper.openSession();
         Session session = helper.getSession();
-        SQLQuery query = session.createSQLQuery("SELECT * FROM PlaceDistances WHERE (Place1Id IN (SELECT id FROM Places WHERE userId = :uId) AND Place2Id IN (SELECT id FROM Places WHERE userId = :uId))");
+        SQLQuery query = session.createSQLQuery("SELECT * FROM PlaceDistances WHERE 1");
         query.addEntity(Distance.class);
-        query.setParameter("uId", userId);
         
         List<Distance> list = query.list();
         

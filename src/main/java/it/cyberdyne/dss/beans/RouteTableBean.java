@@ -1,5 +1,7 @@
 package it.cyberdyne.dss.beans;
 
+import it.cyberdyne.dss.feeds.Feed;
+import it.cyberdyne.dss.feeds.ManageFeeds;
 import it.cyberdyne.dss.places.Distance;
 import it.cyberdyne.dss.places.ManageDistances;
 import it.cyberdyne.dss.places.ManagePlaces;
@@ -7,7 +9,6 @@ import it.cyberdyne.dss.places.Place;
 import it.cyberdyne.dss.routing.engine.Cluster;
 import it.cyberdyne.dss.routing.engine.ClusterManager;
 import it.cyberdyne.dss.routing.io.InputManager;
-import it.cyberdyne.dss.routing.io.reader.MatrixReader;
 import it.cyberdyne.dss.routing.model.Node;
 import it.cyberdyne.dss.routing.model.VehicleType;
 import it.cyberdyne.dss.utils.MatrixRemover;
@@ -195,14 +196,15 @@ public class RouteTableBean implements Serializable {
         ManageVehicles vehicleManager = new ManageVehicles(loginBean.getLoggedId());
         ManagePlaces placeManager = new ManagePlaces(loginBean.getLoggedId());
         ManageDistances distanceManager = new ManageDistances(loginBean.getLoggedId());
+        ManageFeeds feedManager = new ManageFeeds(loginBean.getLoggedId());
+        
         System.out.println("Get data from DB...");
         List<Vehicle> vehicleList = vehicleManager.listVehicles();
-
         List<Place> placeList = placeManager.listPlaces();
+        List<Feed> feedList = feedManager.listFeeds();
+        
         ArrayList<Integer> placeToBeRemoved = new ArrayList<>();
-        int c = 0;
         for (Place place : placeList) {
-            
             if (!place.isEnabled()) {
                 Integer removeId = place.getId()-1;
                 placeToBeRemoved.add(removeId);
@@ -220,49 +222,88 @@ public class RouteTableBean implements Serializable {
         }
         System.out.println("PlaceList size after:"+placeList.size());
         List<Distance> distanceList = distanceManager.listDistances();
+        System.out.println("DistanceList size="+distanceList.size());
         ArrayList<VehicleType> vTypeList = new ArrayList<>();
         ArrayList<Node> localNodeList = new ArrayList<>();
         
         Iterator<Vehicle> it = vehicleList.iterator();
         int i = 0;
+        Feed feed = feedList.get(0);
         while (it.hasNext()) {
             Vehicle v = it.next();
-            VehicleType vehicle = new VehicleType(i++, v.getCode(), v.getModel(), v.getQuantity(), v.getCapacity(), v.getDistance(), v.getTime(), v.getTime().toString());
+            VehicleType vehicle = new VehicleType(i++, v.getCode(), v.getModel(), v.getQuantity(), v.getCapacity(), v.getDistance(), v.getTime(), v.getStart());
+            vehicle.setFeedSessionAttributes(new Float(feed.getDuration()), feed.getStart(), feed.isUniformed());
             vTypeList.add(vehicle);
+            //System.out.println(i+". "+vehicle);
         }
+
         Iterator<Place> it2 = placeList.iterator();
         i = 0;
         while (it2.hasNext()) {
             Place p = it2.next();
-            Node node = new Node(i++, p.getLabel(), p.getDemand().floatValue(), p.getServiceTime());
+            Node node = new Node(i++, p.getLabel(), p.getDemandA().floatValue(), p.getServiceTime());
             //System.out.println(i+":"+node);
             localNodeList.add(node);
         }
+        
         Iterator<Distance> it3 = distanceList.iterator();
         /* i = 0;*/
+        
         while (it3.hasNext()) {
             Distance p = it3.next();
-            distMatrix[p.getPlaceId1() - 1][p.getPlaceId2() - 1] = p.getDistance();
+            //System.out.println("Distance:"+p);
+           
+            int ix = placeListSearchId(placeList, p.getPlaceId1());
+            int iy = placeListSearchId(placeList, p.getPlaceId2());
+            //System.out.println("Place of "+p.getPlaceId1()+","+p.getPlaceId2()+":"+ix+","+iy);
+            distMatrix[ix][iy] = p.getDistance();
         }
         System.out.println("Dist Matrix size before:"+distMatrix.length+","+distMatrix[0].length);
         if (placeToBeRemoved.size() > 0) {
             distMatrix = removeDistances(distMatrix, placeToBeRemoved);
         }
         System.out.println("Dist Matrix size after:"+distMatrix.length+","+distMatrix[0].length);
+        System.out.println("Initializing input manager...");
+        String s="";
+//        for (int k=0; k<distMatrix.length; k++)
+//        {
+//            s="";
+//            for (int j=0; j<distMatrix[0].length; j++)
+//            {
+//                s+=distMatrix[k][j]+"; ";
+//            }
+//            System.out.println(s);
+//        }
+            
+        
+        
         InputManager iMan = new InputManager(1, distMatrix, localNodeList, vTypeList);
         ClusterManager clusterMan = new ClusterManager(iMan);
-        clusterNumber = clusterMan.process();
-        System.out.println("Trovati " + clusterNumber + " cluster");
-        if (clusterNumber > 0) {
-            System.out.println("Clusters:");
-            clusterMan.printClusters();
-            System.out.println("´Routing:");
-            clusterMan.printTours();
-            clusters = clusterMan.getClusters();
-            init();
-        }
+        //clusterNumber = clusterMan.process();
+        //System.out.println("Trovati " + clusterNumber + " cluster");
+        //if (clusterNumber > 0) {
+        //    System.out.println("Clusters:");
+        //    clusterMan.printClusters();
+        //    System.out.println("´Routing:");
+        //    clusterMan.printTours();
+        //    clusters = clusterMan.getClusters();
+        //    init();
+        //}
     }
 
+    private int placeListSearchId(List<Place> placeList, int id) {
+        
+        for (int i=0; i<placeList.size(); i++)
+        {
+            if (placeList.get(i).getId() == id)
+                return i;
+        }
+        return -1;
+        
+    }
+    
+
+    
     public String getCode() {
         return code;
     }

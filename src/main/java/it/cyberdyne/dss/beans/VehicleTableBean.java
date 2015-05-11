@@ -153,6 +153,8 @@ public class VehicleTableBean {
             }
         }
         deletedVehicles.removeAll(deletedVehicles);
+        FacesMessage msg = new FacesMessage("Vehicles Saved");
+        FacesContext.getCurrentInstance().addMessage(null, msg);
         //return to current page
         return null;
         
@@ -210,6 +212,6 @@ public class VehicleTableBean {
     }
     
     public void addVehicle() {
-        vehicleList.add(new Vehicle("000", 0, "Model", 0.0, 0.0, 0.0, new Time(5, 0, 0), loginBean.getLoggedId(), true));
+        vehicleList.add(new Vehicle("000", 0, "Model", 0.0, 0.0, 0.0, "5:0:0", loginBean.getLoggedId(), true));
     }
 }

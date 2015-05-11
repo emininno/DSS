@@ -28,10 +28,10 @@ public class ManagePlaces {
         
     }
     
-    public Integer addPlace(String label, Double demand, Integer serviceTime, Time open, Time close, String address, Integer userId) {
+    public Integer addPlace(String label, Double demandA, Double demandB, Integer serviceTime, Time open, Time close, String address, Integer userId) {
         if (!isPlace(label)) {
             helper.openSession();
-            Place place = new Place(label,  demand,  serviceTime,  open,  close,  address,  userId);
+            Place place = new Place(label,  demandA, demandB,  serviceTime,  open,  close,  address,  userId);
             int id = this.helper.pushData(place);
             helper.closeSession();
             return id;
@@ -89,7 +89,7 @@ public class ManagePlaces {
         return list.get(0).getId();
     }
 
-    public Double getDemand(int id) {
+    public Double getDemandA(int id) {
         helper.openSession();
         Session session = helper.getSession();
         Criteria cr=session.createCriteria(Place.class);
@@ -98,7 +98,19 @@ public class ManagePlaces {
         List<Place> list = cr.list();
         helper.closeSession();
         
-        return list.get(0).getDemand();
+        return list.get(0).getDemandA();
+    }
+    
+        public Double getDemandB(int id) {
+        helper.openSession();
+        Session session = helper.getSession();
+        Criteria cr=session.createCriteria(Place.class);
+        cr.add(Restrictions.eq("userId", userId));
+        cr.add(Restrictions.eq("id", id));
+        List<Place> list = cr.list();
+        helper.closeSession();
+        
+        return list.get(0).getDemandB();
     }
 
     public Integer getServiceTime(int id) {

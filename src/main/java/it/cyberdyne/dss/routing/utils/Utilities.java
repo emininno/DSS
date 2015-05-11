@@ -18,6 +18,26 @@ public class Utilities {
     public static String format3fract(double d) {
         return s_3fract.format(d);
     }
+  
+    public static float stringHourToMinutes(String hourMin)
+  {
+    float minutes = 0.0F;
+    String[] hhmi = hourMin.split(":");
+    if (hhmi.length >= 2) {
+      int h = Integer.parseInt(hhmi[0]);
+      int m = Integer.parseInt(hhmi[1]);
+      minutes = h * 60 + m;
+    }
+    else {
+      System.err.println("stringHourToMinutes: errore nel formato dell'input. Atteso hh:mi");
+    }
+    return minutes;
+  }
+    
+  public static float hourDiff(String hm1, String hm2)
+  {
+    return stringHourToMinutes(hm1) - stringHourToMinutes(hm2);
+  }
 
     public static ArrayList<Node> getSortedNodes(int nodeId, InputManager iman) {
         Double[] dists = iman.getDistRow(nodeId);
@@ -184,5 +204,9 @@ public class Utilities {
 
         String format = "#.###";
     }
+    public static double squareDiff(double a, double b)
+  {
+    return Math.abs(Math.sqrt(Math.pow(a - b, 2.0D)));
+  }
 }
 
