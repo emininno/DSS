@@ -12,15 +12,15 @@
         <h3>Tour Panel</h3><br/>
         <h:form>
             <ui:include src="/secured/header.xhtml" />
-            <p:panel header="Tour Selector" style="margin-bottom:10px;">
+            <p:panel header="Tour Selector A" style="margin-bottom:10px;">
                 <h:panelGrid columns="3" cellpadding="5">
-                    <p:outputLabel for="Tour" value="Tour Number: " />
-                    <p:selectOneMenu id="Tour" value="#{routeBean.tour}" style="width:150px">
+                    <p:outputLabel for="TourA" value="Tour Number: " />
+                    <p:selectOneMenu id="TourA" value="#{routeBean.tour}" style="width:150px">
 
                         <f:selectItem itemLabel="Select Tour" itemValue="" noSelectionOption="true" />
                         <f:selectItems value="#{routeBean.toursNames}" />
                     </p:selectOneMenu>  
-                    <p:commandButton id="Submit" value="update" action="#{routeBean.updateData}" icon="ui-icon-refresh" update="Group1"/>
+                    <p:commandButton id="SubmitA" value="update" action="#{routeBean.updateData}" icon="ui-icon-refresh" update="Group1"/>
                 </h:panelGrid> 
                 <br/>
                 <h:panelGroup id="Group1">
@@ -30,6 +30,7 @@
                         <p:outputLabel value="#{routeBean.vehicleCode}"/>
 
                         <p:outputLabel value="#{routeBean.vehicleMaxLoad}"/>
+                        <p:outputLabel value="#{routeBean.vehicleStartTime}"/>
                     </h:panelGrid> 
                     <br/>
                     <p:dataTable id="routeList" var="node" value="#{routeBean.nodeList}">
@@ -47,9 +48,44 @@
                 <br/>
 
             </p:panel>
+            <p:panel header="Tour Selector B" style="margin-bottom:10px;">
+                <h:panelGrid columns="3" cellpadding="5">
+                    <p:outputLabel for="TourB" value="Tour Number: " />
+                    <p:selectOneMenu id="TourB" value="#{routeBean.tourB}" style="width:150px">
+
+                        <f:selectItem itemLabel="Select Tour" itemValue="" noSelectionOption="true" />
+                        <f:selectItems value="#{routeBean.toursNamesB}" />
+                    </p:selectOneMenu>  
+                    <p:commandButton id="SubmitB" value="update" action="#{routeBean.updateData}" icon="ui-icon-refresh" update="Group2"/>
+                </h:panelGrid> 
+                <br/>
+                <h:panelGroup id="Group2">
+                    <h:panelGrid id="Grid2" columns="5" cellpadding="5" >
+                        <p:outputLabel value="#{routeBean.timeDisplayB}"/>
+                        <p:outputLabel value="#{routeBean.distanceDisplayB}"/>
+                        <p:outputLabel value="#{routeBean.vehicleCodeB}"/>
+
+                        <p:outputLabel value="#{routeBean.vehicleMaxLoadB}"/>
+                        <p:outputLabel value="#{routeBean.vehicleStartTimeB}"/>
+                    </h:panelGrid> 
+                    <br/>
+                    <p:dataTable id="routeListB" var="node" value="#{routeBean.nodeListB}">
+                        <p:column headerText="Code">
+                            <h:outputText value="#{node.label}" />
+                        </p:column>
+                        <p:column headerText="Demand">
+                            <h:outputText value="#{node.demand}" />
+                        </p:column>
+                        <p:column headerText="Arrival Time">
+                            <h:outputText value="#{node.arrivalTime}" />
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGroup>
+                <br/>
+
+            </p:panel>
             <p:separator/>
-            <p:commandButton id="Route" value="Route!" action="#{routeBean.route}" icon="ui-icon-refresh" update="Tour"/>
+            <p:commandButton id="Route" value="Route!" action="#{routeBean.route}" icon="ui-icon-refresh" update="TourA,TourB"/>
         </h:form>
     </h:body>
 </html>
-

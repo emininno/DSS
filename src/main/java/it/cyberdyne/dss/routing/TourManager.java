@@ -26,7 +26,7 @@ public class TourManager
     try {
       InputManager iMan = new InputManager(call_id, inputDirPath);
       if (iMan.check()) {
-        iMan.readFiles();
+        //iMan.readFiles();
       } else {
         throw new RuntimeException("Errore: check dei file di input fallito!");
       }

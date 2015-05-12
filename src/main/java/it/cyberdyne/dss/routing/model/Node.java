@@ -21,6 +21,7 @@ public class Node
   private boolean m_routed;
   private static Float ms_granularity;
   private static boolean ms_demandDivisible = false;
+  private double startTime;
   
   public Node(int id, String label, float demand, float serviceTime)
   {

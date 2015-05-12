@@ -59,6 +59,7 @@ public class InputManager
     this.m_distMatrixReader = new MatrixReader(distMatr);
     this.m_timeMatrixReader = new MatrixReader(timeMatr);
     this.m_nodeReader = new NodeReader(nodes);
+    this.m_vehicleReader = new VehicleReader(vehTypes);
   }
   
   public InputManager(int call_id, Double[][] distMatr, double avgSpeed, ArrayList<Node> nodes, ArrayList<VehicleType> vehTypes)
@@ -67,8 +68,12 @@ public class InputManager
       Double[][] timeMatr = new Double[distMatr.length][distMatr[0].length];
       
       for (int i = 0; i < distMatr.length; i++) {
-        for (int j = 0; j < distMatr[0].length; j++)
-          timeMatr[i][j] = Double.valueOf(distMatr[i][j].doubleValue() / avgSpeed);
+          String s="T:  ";
+        for (int j = 0; j < distMatr[0].length; j++){
+          timeMatr[i][j] = distMatr[i][j] / avgSpeed;
+            s+=timeMatr[i][j]+"; ";
+        }
+          //System.out.println(s);
       }
       directInit(call_id, distMatr, timeMatr, nodes, vehTypes);
     }
@@ -150,60 +155,7 @@ public class InputManager
   
 
 
-  public void readFiles()
-    throws Exception
-  {
-    try
-    {
-      VehicleReader vr = new VehicleReader(this.m_inputDirParh, this.m_callId);
-      vr.read();
-      
-      this.m_vehicleReader = vr;
 
-      NodeReader nr = new NodeReader(this.m_inputDirParh, this.m_callId);
-      nr.read();
-      
-      System.out.println("DEBUG. Size del vettore dei nodi " + nr.getArray().size());
-      this.m_nodeReader = nr;
-      
-      String distFilePath = this.m_inputDirParh + "/" + "dist_matrix_" + this.m_callId + ".csv";
-      
-      MatrixReader dists = new MatrixReader(distFilePath);
-      dists.read();
-      
-      System.out.println("dists.getRowCount() = " + dists.getRowCount());
-      
-      String timeFileName = "time_matrix_" + this.m_callId + ".csv";
-      
-      String timeFilepath = "";
-      if (this.m_timeFilePresent) {
-        timeFilepath = this.m_inputDirParh + FILE_SEP + timeFileName;
-
-      }
-      else
-      {
-
-        timeFilepath = Constants.WORK_DIR + FILE_SEP + timeFileName;
-        
-        buildTimeMatrixFile(Constants.AVG_SPEED, dists, timeFilepath);
-        System.out.println("DEBUG: al momento la matrice dei tempi e' generata in ./work considerando una velocita' media di " + Constants.AVG_SPEED + " km/h");
-      }
-      
-      MatrixReader durations = new MatrixReader(timeFilepath);
-      durations.read();
-      
-      this.m_distMatrixReader = dists;
-      this.m_timeMatrixReader = durations;
-      
-      checkPostRead();
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      throw e;
-    }
-  }
-  
   private boolean checkPostRead()
     throws Exception
   {

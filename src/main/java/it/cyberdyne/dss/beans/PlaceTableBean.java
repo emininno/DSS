@@ -8,7 +8,9 @@ package it.cyberdyne.dss.beans;
 import it.cyberdyne.dss.places.Distance;
 import it.cyberdyne.dss.places.ManageDistances;
 import it.cyberdyne.dss.places.ManagePlaces;
+import it.cyberdyne.dss.places.ManageTravelTimes;
 import it.cyberdyne.dss.places.Place;
+import it.cyberdyne.dss.places.TravelTime;
 import it.cyberdyne.dss.utils.HibernateUtil;
 import it.cyberdyne.dss.vehicles.Vehicle;
 import java.io.File;
@@ -53,11 +55,21 @@ public class PlaceTableBean implements Serializable {
     private ArrayList<Place> placeList;
     private ArrayList<Place> deletedPlaces;
     private ArrayList<Distance> distanceList;
+    private ArrayList<TravelTime> timeList;
     private PlaceBean service;
     private Place selectedPlace;
 
     private UploadedFile file;
     private UploadedFile fileMatrix;
+    private UploadedFile fileTimeMatrix;
+
+    public UploadedFile getFileTimeMatrix() {
+        return fileTimeMatrix;
+    }
+
+    public void setFileTimeMatrix(UploadedFile fileTimeMatrix) {
+        this.fileTimeMatrix = fileTimeMatrix;
+    }
 
     public UploadedFile getFileMatrix() {
         return fileMatrix;
@@ -128,6 +140,25 @@ public class PlaceTableBean implements Serializable {
             System.out.println("NULL!");
         }
     }
+    
+    public void uploadTimeMatrix(FileUploadEvent event) throws IOException {
+        System.out.println("UPLOAD Time Matrix");
+        //RequestContext.getCurrentInstance().closeDialog(event);
+        UploadedFile file2 = event.getFile();
+        if (file2 != null) {
+
+            FacesMessage message = new FacesMessage("Succesful", file2.getFileName() + " is uploaded.");
+            FacesContext.getCurrentInstance().addMessage(null, message); //TODO dove va questo messaggio?
+            String theString;
+            theString = IOUtils.toString(file2.getInputstream(), "UTF-8");
+            System.out.println("theString:"+theString);
+            ArrayList<String> list = new ArrayList<>(Arrays.asList(theString.split("\n")));
+            System.out.println("List size:"+ list.size());
+            updateTimeMatrix(list);
+        } else {
+            System.out.println("NULL!");
+        }
+    }
 
     public Place getSelectedPlace() {
         return selectedPlace;
@@ -179,6 +210,14 @@ public class PlaceTableBean implements Serializable {
         ManageDistances manager;
         manager = new ManageDistances(loginBean.getLoggedId());
         List<Distance> list = manager.listDistances();
+        return list;
+    }
+    
+    private List<TravelTime> getTimeListFromDB() {
+        System.out.println("Get Time From DB...");
+        ManageTravelTimes manager;
+        manager = new ManageTravelTimes(loginBean.getLoggedId());
+        List<TravelTime> list = manager.listTimes();
         return list;
     }
 
@@ -330,6 +369,12 @@ public class PlaceTableBean implements Serializable {
         //System.out.println("Distance added:"+d);
         distanceList.add(d);
     }
+    
+    public void addTime(int id1, int id2, double dist) {
+        TravelTime d = new TravelTime(id1, id2, dist);
+        //System.out.println("Distance added:"+d);
+        timeList.add(d);
+    }
 
     public void updateMatrix(List<String> list) {
         System.out.println("UpdateMatrix");
@@ -394,6 +439,71 @@ public class PlaceTableBean implements Serializable {
             }
         }
     }
+    
+    public void updateTimeMatrix(List<String> list) {
+        System.out.println("UpdateTimeMatrix");
+        this.timeList = (ArrayList<TravelTime>) getTimeListFromDB();
+        this.placeList= (ArrayList<Place>)  getPlaceListFromDB();
+        ArrayList<String> row0 = new ArrayList<>(Arrays.asList(list.get(0).split(";")));
+        ArrayList<Integer> indices = new ArrayList<>();
+        Iterator<String> it = row0.iterator();
+        int c = 0;
+        while (it.hasNext()) {
+            String currentLabel = it.next();
+            int index = searchInPlaceList(currentLabel, placeList);
+            if (index >= 0) {
+                indices.add(index);
+                
+            }
+        }
+        //System.out.println("ListSize:"+list.size()+" IndicesSize:"+indices.size());
+        ManagePlaces manager = new ManagePlaces(loginBean.getLoggedId());
+        int rowNumber = 0;
+        for (int i = 0; i < indices.size(); i++) {
+            rowNumber++;
+            String currentRow=list.get(rowNumber);
+            List<String> rows = new ArrayList<>(Arrays.asList(currentRow.split(";")));
+            for (int j = 0; j < indices.size(); j++) {
+                
+                int id1 = manager.getPlaceId(row0.get(i));
+                int id2 = manager.getPlaceId(row0.get(j));
+
+                int s=searchInTimeList(id1, id2);
+                if (s != -1) {
+                    //System.out.println("Distance Found!");
+                } else {
+                    addTime(id1, id2, Double.parseDouble(rows.get(j)));
+                }
+            }
+        }
+        //System.out.println(" ************ Current List: **********");
+        //System.out.println("DistanceList size:"+distanceList.size());
+        //printCurrentDistanceMatrix();
+        SessionFactory s = HibernateUtil.getSessionFactory();
+        for (TravelTime time : timeList) {
+            int id;
+            if (time.getId()!=null)
+                id = time.getId();
+            else
+                id = -1;
+           
+            if (id < 0) {
+                Session session = s.openSession();
+                Transaction tx = null;
+                try {
+                    tx = session.beginTransaction();
+                    session.save(time);
+                    tx.commit();
+                } catch (HibernateException e) {
+                    if (tx != null) {
+                        tx.rollback();
+                    }
+                } finally {
+                    session.close();
+                }
+            }
+        }
+    }
 
     public void updatePlaces(List<String> list) {
         int i = 0;
@@ -412,13 +522,31 @@ public class PlaceTableBean implements Serializable {
     private int searchInPlaceList(String label, List<Place> list) {
 
         for (int i = 0; i < list.size(); i++) {
+            //System.out.println(i+". "+label+"=="+list.get(i).getLabel());
+            boolean b=list.get(i).getLabel().contains(label);
+            //System.out.println("b="+b);
             if (list.get(i).getLabel().equalsIgnoreCase(label)) {
+                //System.out.println("got it!");
                 return i;
             }
         }
         return -1;
     }
 
+    private int searchInTimeList(int id1, int id2) {
+
+        for (TravelTime d : timeList) {
+            //System.out.println("d:"+d);
+            if ((d.getPlaceId1() == id1) && (d.getPlaceId2() == id2)) {
+                if(d != null && d.getId()!=null)
+                    return d.getId();
+                else 
+                    return -1;
+            }
+        }
+        return -1;
+    }
+    
     private int searchInDistanceList(int id1, int id2) {
 
         for (Distance d : distanceList) {

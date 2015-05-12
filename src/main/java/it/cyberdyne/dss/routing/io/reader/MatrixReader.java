@@ -26,7 +26,11 @@ public class MatrixReader
       this.m_rows = matrix.length;
       this.m_cols = matrix[0].length;
       this.m_matrix = new Double[this.m_rows][this.m_cols];
+      for (int i=0;i<this.m_rows;i++)
+          System.arraycopy(matrix[i], 0, this.m_matrix[i], 0, this.m_cols);
     }
+    else
+          System.err.println("MATRICE VUOTA!!");
   }
   
 

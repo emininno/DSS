@@ -39,18 +39,22 @@ public class Utilities {
     return stringHourToMinutes(hm1) - stringHourToMinutes(hm2);
   }
 
-    public static ArrayList<Node> getSortedNodes(int nodeId, InputManager iman) {
-        Double[] dists = iman.getDistRow(nodeId);
-        
-        ArrayList nodes = iman.getNodes();
-        System.out.println("Dists size="+dists.length);
-        for (int i = 0; i < nodes.size(); i++) {
-            
-            ((Node) nodes.get(i)).setDistance(dists[i]);
-        }
-        Collections.sort(nodes);
-        return nodes;
+  public static ArrayList<Node> getSortedNodes(int nodeId, InputManager iman)
+  {
+    System.out.println("Set Distance Nodes...");
+    Double[] dists = iman.getDistRow(nodeId);
+    ArrayList<Node> nodes = iman.getNodes();
+    String s = "";
+      for (Double dist : dists) {
+          s += dist + "; ";
+      }
+      System.out.println(s);
+    for (int i = 0; i < nodes.size(); i++) {
+      ((Node)nodes.get(i)).setDistance(dists[i]);
     }
+    Collections.sort(nodes);
+    return nodes;
+  }
 
     public static void printArrayList(ArrayList objs, boolean inLine) {
         System.out.println("Debug printArrayList");

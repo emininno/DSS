@@ -44,12 +44,11 @@ public class ClusterManager
 
     ArrayList<Node> candidate_seeds = getSortedNodes(Constants.DEP_ID);
     
-
-
     PrintStream psUnservible = getTempLogStream("unseribles");
     PrintStream psWaived = getTempLogStream("waiveds");
     
     ArrayList<Vehicle> vehics = this.m_iMan.getVehicles();
+    
     for (int i = candidate_seeds.size() - 1; i > 0; i--) {
       Node seed = (Node)candidate_seeds.get(i);
       

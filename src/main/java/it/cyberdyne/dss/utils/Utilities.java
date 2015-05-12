@@ -31,9 +31,14 @@ public class Utilities
 
   public static ArrayList<Node> getSortedNodes(int nodeId, InputManager iman)
   {
+    System.out.println("Set Distance Nodes...");
     Double[] dists = iman.getDistRow(nodeId);
     ArrayList<Node> nodes = iman.getNodes();
-
+    String s = "";
+      for (Double dist : dists) {
+          s += dist + "; ";
+      }
+      System.out.println(s);
     for (int i = 0; i < nodes.size(); i++) {
       ((Node)nodes.get(i)).setDistance(dists[i]);
     }

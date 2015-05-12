@@ -3,130 +3,27 @@ package it.cyberdyne.dss.routing.io.reader;
 import it.cyberdyne.dss.routing.model.Vehicle;
 import it.cyberdyne.dss.routing.model.VehicleType;
 import it.cyberdyne.dss.routing.utils.Constants;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class VehicleReader
-  extends XMLReader
+  
 {
   public  final String FILE_BASENAME = "vehicles_";
   public  final String SCHEMA_FILENAME = null;
 
   private ArrayList<Vehicle> m_vehicles;
+  private final ArrayList<VehicleType> m_list;
 
-  public VehicleReader(String directory, int call_id)
-  {
-    super(call_id);
-    this.m_filepath = (directory + File.separator + "vehicles_" + call_id + ".xml");
-  }
 
   public VehicleReader(ArrayList<VehicleType> types)
   {
-    super(types);
-  }
-
-  public void read()
-    throws Exception
-  {
-    try
-    {
-      File file = new File(this.m_filepath);
       
-      URL confUrl = getClass().getResource(Constants.XML_SCHEMA_VEHICLES);
-      
-      if (confUrl != null) {
-        parse(file, confUrl.openStream());
-      } else {
-        parse(file, null);
-      }
-      if (this.m_document != null)
-      {
-        createVehicleTypeArray();
-      }
-    }
-    catch (Exception ioe) {
-      throw ioe;
-    }
+      this.m_list = types;
+     
   }
-
-  private void createVehicleTypeArray()
-    throws Exception
-  {
-    this.m_list = new ArrayList();
-    
-    Node root = this.m_document.getFirstChild();
-    
-    Integer readCallId = Integer.valueOf(Integer.parseInt(root.getAttributes().getNamedItem("call_id").getNodeValue()));
-
-    if (readCallId.intValue() != this.m_callId) {
-      this.m_document = null;
-      throw new Exception("Errore: Incongruenza tra nome del file e attributo call_id");
-    }
-  
-    Float feedSessionDuration = Float.valueOf(1.0E10F);
-    String feedSessionStart = null;
-    boolean uniformedStart = false;
-    
-    NodeList elems = root.getChildNodes();
-    for (int i = 0; i < elems.getLength(); i++)
-    {
-      String tmpText = null;
-      Node directChild = elems.item(i);
-      if (directChild.getNodeType() == 1) {
-        Float wkTime;
-        if (directChild.getNodeName().equals("working_time"))
-        {
-          wkTime = Float.valueOf(Float.parseFloat(directChild.getTextContent()));
-
-        }
-        else if (directChild.getNodeName().equals("feed_session_duration")) {
-          tmpText = directChild.getTextContent();
-          if ((tmpText != null) && (!tmpText.trim().equals("INF"))) {
-            feedSessionDuration = Float.valueOf(Float.parseFloat(directChild.getTextContent()));
-          }
-        } else if (directChild.getNodeName().equals("feed_session_start")) {
-          tmpText = directChild.getTextContent();
-          if ((tmpText != null) && (!tmpText.trim().equals("x:xx"))) {
-            feedSessionStart = tmpText.trim();
-          }
-        } else if (directChild.getNodeName().equals("uniformed_start")) {
-          String value = directChild.getTextContent();
-          if (value != null) {
-            uniformedStart = Boolean.parseBoolean(value);
-          }
-        }
-        else if (directChild.getNodeName().equals("vehicles"))
-        {
-
-          NodeList vsChildren = directChild.getChildNodes();
-          for (int j = 0; j < vsChildren.getLength(); j++)
-          {
-            if (vsChildren.item(j).getNodeName().equals("vehicle"))
-            {
-              addToTypeArray(vsChildren.item(j));
-            }
-          }
-        }
-      }
-    }
-    
-
-
-    System.out.println("DEBUG: feedSessionDuration = " + feedSessionDuration);
-    System.out.println("DEBUG: feedSessionStart = " + feedSessionStart);
-    System.out.println("DEBUG: uniformedStart = " + uniformedStart);
-    
-    //VehicleType.setFeedSessionAttributes(feedSessionDuration, feedSessionStart, uniformedStart);
-  }
-  
 
 
   private void addToTypeArray(Node vehicleNode)
@@ -238,26 +135,7 @@ public class VehicleReader
     return this.m_vehicles;
   }
   
-  public void test_read()
-    throws Exception
-  {
-    try
-    {
-      FileReader fr = new FileReader(this.m_filepath);
-      BufferedReader br = new BufferedReader(fr);
-      
-      String line;
-      while ((line = br.readLine()) != null) {
-        System.out.println(line);
-      }
-    }
-    catch (FileNotFoundException fnfe) {
-      throw fnfe;
-    }
-    catch (IOException ioe) {
-      throw ioe;
-    }
-  }
+
   
   public ArrayList<VehicleType> getArray() {
     ArrayList<VehicleType> vt = new ArrayList();

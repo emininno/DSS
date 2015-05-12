@@ -96,6 +96,10 @@ public class VehicleType
     return this.m_totQty;
   }
   
+  public void setTotQty(int quantity) {
+    this.m_totQty = quantity;
+  }
+  
   public double getMaxLoad() {
     return this.m_maxLoad;
   }

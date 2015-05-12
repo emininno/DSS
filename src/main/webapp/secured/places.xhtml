@@ -24,9 +24,10 @@
                 <f:facet name="left">
                     <p:commandButton id="new" value="New place" action="#{placeTableBean.addPlace}" icon="ui-icon-plus" update="placeList" ajax="true"/>
                     <p:commandButton id="submit" value="Save Changes" action="#{placeTableBean.saveAction}" icon="ui-icon-disk"/>
-                    <p:commandButton id="reload" value="Reload from DB" action="#{placeTableBean.init}" icon="ui-icon-refresh" update="placeList" ajax="true"/>
+                    <p:commandButton id="reload" value="Reload" action="#{placeTableBean.init}" icon="ui-icon-refresh" update="placeList" ajax="true"/>
                     <p:commandButton value="Upload places" type="button" onclick="PF('dlg2').show();" />
                     <p:commandButton value="Upload distance matrix" type="button" onclick="PF('dlg3').show();" />
+                    <p:commandButton value="Upload Time matrix" type="button" onclick="PF('dlg4').show();" />
                 </f:facet>
             </p:toolbar>
             <p:separator/>
@@ -107,6 +108,14 @@
                 <h:outputText value="Select a CSV file to upload place distances." />
                 <h:form enctype="multipart/form-data">
                     <p:fileUpload value="#{placeTableBean.fileMatrix}" fileUploadListener="#{placeTableBean.uploadMatrix}" mode="advanced" disabled="false"/>
+                    <h:commandButton value="Submit file" actionListener="#{placeTableBean.dummy}" disabled="false"/>
+                </h:form>
+            </p:dialog>
+            <p:growl id="messages3" showDetail="true" />
+            <p:dialog header="Modal Dialog" widgetVar="dlg4" modal="true" height="250" width="400">
+                <h:outputText value="Select a CSV file to upload time matrix" />
+                <h:form enctype="multipart/form-data">
+                    <p:fileUpload value="#{placeTableBean.fileTimeMatrix}" fileUploadListener="#{placeTableBean.uploadTimeMatrix}" mode="advanced" disabled="false"/>
                     <h:commandButton value="Submit file" actionListener="#{placeTableBean.dummy}" disabled="false"/>
                 </h:form>
             </p:dialog>
